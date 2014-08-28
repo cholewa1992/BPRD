@@ -3,7 +3,7 @@
 
 ### FSharp ###
 
-.exe
+*.exe
 
 ### OSX ###
 .DS_Store
