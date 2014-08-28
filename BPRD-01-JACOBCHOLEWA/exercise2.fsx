@@ -63,10 +63,10 @@ printfn "%A" (freevars e1)
 printfn "%A" (freevars e2)
 
 //Exercise 2.3
-type texpr =                            (* target expressions *)
+type texpr =
   | TCstI of int
-  | TVar of int                         (* index into runtime environment *)
-  | TLet of texpr * texpr               (* erhs and ebody                 *)
+  | TVar of int
+  | TLet of texpr * texpr
   | TPrim of string * texpr * texpr;;
 
 let rec getindex vs x = 
@@ -85,4 +85,4 @@ let rec tcomp (e : expr) (cenv : string list) : texpr =
         | (x,erhs)::xs -> TLet(tcomp erhs cenv, tcomp (Let(xs,ebody)) (x::cenv)) 
     | Prim(ope, e1, e2) -> TPrim(ope, tcomp e1 cenv, tcomp e2 cenv);;
 
-printfn "%A" (tcomp e1 [])
+printfn "%A" (tcomp (Let(["x", CstI 5],e2)) [])
