@@ -1,12 +1,18 @@
 # Created by http://www.gitignore.io
 
+
+### FSharp ###
+
+.exe
+
 ### OSX ###
 .DS_Store
 .AppleDouble
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
