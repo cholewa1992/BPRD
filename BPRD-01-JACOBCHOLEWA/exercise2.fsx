@@ -18,8 +18,8 @@ let rec eval e (env : (string * int) list) : int =
         match list with
         | [] -> eval ebody env
         | (x,expr)::xs ->
-        let xval = eval expr env 
-        eval <| Let(xs, ebody) <| (x,xval) :: env
+            let xval = eval expr env 
+            eval <| Let(xs, ebody) <| (x,xval) :: env
     | Prim("+", e1, e2) -> eval e1 env + eval e2 env
     | Prim("*", e1, e2) -> eval e1 env * eval e2 env
     | Prim("-", e1, e2) -> eval e1 env - eval e2 env
