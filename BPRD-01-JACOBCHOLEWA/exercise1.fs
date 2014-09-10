@@ -1,3 +1,4 @@
+module exercise1
 // Exercise 1.1.i
 let rec lookup env x =
     match env with 
@@ -17,8 +18,14 @@ let rec eval e (env : (string * int) list) : int =
     | Prim("*", e1, e2) -> eval e1 env * eval e2 env
     | Prim("-", e1, e2) -> eval e1 env - eval e2 env
     | Prim("==", e1, e2) -> if (eval e1 env) = (eval e2 env) then 1 else 0
-    | Prim("max", e1, e2) -> if (eval e1 env) > (eval e2 env) then (eval e1 env) else (eval e2 env)
-    | Prim("min", e1, e2) -> if (eval e1 env) < (eval e2 env) then (eval e1 env) else (eval e2 env)
+    | Prim("max", e1, e2) ->
+                    let i1 = (eval e1 env)
+                    let i2 = (eval e2 env)
+                    if i1 > i2 then i1 else i2
+    | Prim("min", e1, e2) ->
+                    let i1 = (eval e1 env)
+                    let i2 = (eval e2 env)
+                    if i1 < i2 then i1 else i2
     | Prim _            -> failwith "unknown primitive";;
 
 // Exercise 1.1.ii
@@ -78,8 +85,7 @@ let rec eval3 (e : expr2) (env : (string * int) list) : int =
         |   "max" -> if i1 > i2 then i1 else i2
         |   "min" -> if i1 < i2 then i1 else i2
         |   _ -> failwith "unknown operator"
-
-    |   If(e1, e2, e3) -> if eval3 e1 env = 1 then eval3 e2 env else eval3 e3 env
+    |   If(e1, e2, e3) -> if eval3 e1 env = 0 then eval3 e3 env else eval3 e2 env
 
 printfn "%d" (eval3 (If(Prim("==", CstI 6, CstI 6), CstI 4, CstI 5)) []);; //Result = 4
 printfn "%d" (eval3 (If(Prim("==", CstI 1, CstI 6), CstI 4, CstI 5)) []);; //Result = 5
@@ -141,6 +147,13 @@ let rec simplify aexpr : aexpr =
         | _ -> Mul(e1,e2)
     | _ -> aexpr
 
+//Exercise 1.2.v
+let rec symbdiff expr x = match expr with
+        | CstI i -> CstI 0
+        | Var i -> if i = x then CstI 1 else CstI 0
+        | Add(e1,e2) -> Add(symbdiff e1 x, symbdiff e2 x)
+        | Sub(e1,e2) -> Sub(symbdiff e1 x, symbdiff e2 x)
+        | Mul(e1,e2) -> Add(Mul(symbdiff e1 x, e2),Mul(e1, symbdiff e2 x))
 
 printfn "%s" << fmt << simplify <| Mul(Sub(Mul(CstI 1, CstI 6),Mul(CstI 1, CstI 6)) ,CstI 2)
 
