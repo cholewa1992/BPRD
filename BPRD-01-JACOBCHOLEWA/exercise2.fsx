@@ -1,4 +1,4 @@
-//Exercise 2.1
+//Exercise 1.1
 type expr = 
   | CstI of int
   | Var of string
