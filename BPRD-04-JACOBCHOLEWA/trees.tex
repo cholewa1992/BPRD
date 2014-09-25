@@ -1,0 +1,22 @@
+\documentclass[]{report}
+\usepackage{mathtools}
+\begin{document}
+Tree for exercise 6.4.i
+\begin{equation}
+\frac{\frac{\frac{}{\rho \vdash 1:int}}{\rho [x \mapsto \alpha ,f \mapsto \alpha \mapsto int] \vdash 1:int} \quad \frac{\rho [f \mapsto \forall \alpha . \alpha \mapsto int ] f = \forall \alpha . \alpha \mapsto int }{\rho [f \mapsto \forall \alpha . \alpha \mapsto int ] \vdash f f: int}}{\rho \vdash \text{let } f x = 1 \text{ in } f f \text{ end}:int}
+\end{equation}
+Tree for exercise 6.4.ii
+
+\begin{equation}
+\frac{\frac{\rho [x \mapsto int, f \mapsto int \mapsto int] x = int}{\rho [x \mapsto int, f \mapsto int \mapsto int] \vdash n : int} \quad \frac{}{\rho [...] \vdash 10:int}}{\rho [x \mapsto int, f \mapsto int \mapsto int] \vdash x \textless 10:bool}
+\end{equation}
+
+\begin{equation}
+\frac{\frac{\rho [x \mapsto int, f \mapsto int \mapsto int] f = int \mapsto int}{\rho [x \mapsto int, f \mapsto int \mapsto int] \vdash f : int \mapsto int} \quad \frac{\frac{\rho [x \mapsto int, f \mapsto int \mapsto int] x = int }{\rho [x \mapsto int, f \mapsto int \mapsto int] \vdash x:int} \quad \frac{}{\rho [...] \vdash 1:int}}{\rho [x \mapsto int, f \mapsto int \mapsto int] \vdash x + 1:int}}{\rho [x \mapsto int, f \mapsto int \mapsto int] \vdash f(x+1):int}
+\end{equation}
+
+\begin{equation}
+\frac{\frac{ (\text{equation } 2) \quad \frac{}{\rho [...] \vdash 42 : int} \quad \frac{\text{(equation } 3)}{\rho [x \mapsto int, f \mapsto int \mapsto int ] \vdash f(x+1):int}}{\rho [x \mapsto int, f \mapsto int \mapsto int] \vdash \text{if } x \textless 10 \text{ then } 42 \text{ else } f(x+1):int}\quad \frac{\frac{\rho [f \mapsto int \mapsto int] f = int \mapsto int}{\rho [f \mapsto int \mapsto int] \vdash f : int \mapsto int} \quad \frac{}{\rho [...] \vdash 20:int} }{\rho [f \mapsto int \mapsto int] f 20 : int}}{\rho \vdash \text{let } f x = \text{ if } x \textless 10 \text{ then } 42 \text{ else } f(x+1) \text{ in } f 20 \text{ end}:int}
+\end{equation}
+
+\end{document}

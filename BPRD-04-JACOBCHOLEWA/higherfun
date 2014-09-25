@@ -1,0 +1,2 @@
+#!/bin/bash
+fsharpi -r FsLexYacc.Runtime.dll Absyn.fs FunPar.fs FunLex.fs Parse.fs HigherFun.fs ParseAndRunHigher.fs exercises.fs
