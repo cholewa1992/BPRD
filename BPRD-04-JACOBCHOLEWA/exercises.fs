@@ -33,5 +33,19 @@ let r6 = run e6;; //equals 10
 //The tree can be seen in the file trees.pdf
 //As shown, the type of f can not be polymorphic
 
-//Exercise 6.5
-//I did not have time to finish this exercise within the deadline
+//Exercise 6.5.1
+let e7 = fromString "let f x = 1 in f f end";; //int
+let e8 = fromString "let f g = g g in f end";; //error as g can not be polymorphic in its own body 
+let e9 = fromString "let f x = let g y = y in g false end in f 42 end";; //bool
+let e10 = fromString "let f x = let g y = if true then y else x in g false end in f 42 end";; //Ill typed as the if returns both bool and int
+let e11 = fromString "let f x = let g y = if true then y else x in g false end in f true end";; //bool
+
+//Exercise 6.5.2
+let e12 = fromString "let f x = if x then true else false in f end";;
+let e13 = fromString "let f x = x * x in f end";;
+let e14 = fromString "let f x = let g y = x*y in g end in f end";;
+let e15 = fromString "let f x = let g y = x in g end in f end";;
+let e16 = fromString "let f x = let g y = y in g end in f end";;
+//I cant figure out how to do (a -> b) -> (b -> c) -> (a -> c)
+let e18 = fromString "let f x = f x in f end";;
+let e19 = fromString "let f x = f x in f 8 end";;
