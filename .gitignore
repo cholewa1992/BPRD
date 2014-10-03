@@ -1,5 +1,6 @@
 # Created by http://www.gitignore.io
 
+.out
 
 ### FSharp ###
 
@@ -300,3 +301,36 @@ FakesAssemblies/
 *.vrb
 *.xdy
 *.tdo
+# Created by https://www.gitignore.io
+
+### C ###
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
