@@ -1,0 +1,40 @@
+	24	LDARGS;				n
+	19 1 5 	CALL (1, "L1");			main(n);
+	25	STOP;				exit(0);
+Label L1					void main (int n);
+	15 1	INCSP 1; 			&i;
+	13	GETBP;				|
+	0 1	CSTI 1;				|
+	1	ADD; 				|
+	0 0 	CSTI 0;				i = 0;
+	12	STI;				| 
+	15 1 	INCSP -1;			(clean stack)
+	16 41	GOTO "L3"
+Label L2 
+	13 	GETBP;				(puts i on the stack)
+	0 1	CSTI 1;				|
+	1 	ADD;				|
+	11 	LDI;				|
+	22 	PRINTI;				print i;
+	15 -1	INCSP -1;			(clean stack)
+	13	GETBP; 				(&i = bp + 1)
+	0 1	CSTI 1;				|
+	1	ADD;				|
+	13 	GETBP;				(puts i on the stack)
+	0 1 	CSTI 1;				|
+	1	ADD;				|
+	11	LDI;				|
+	0 1	CSTI 1;				i+1
+	1 	ADD;				|
+	12 	STI;				i=i+1
+	15 -1	INCSP -1;			(clean stack)
+Label L3	
+	13 	GETBP;				(puts i on the stack)
+	0 1	CSTI 1;				|
+	1 	ADD				|
+	11 	LDI;				|
+	13 	GETBP;				(puts n on the stack)
+	11 	LDI;				|
+	7 	LT;				i < n
+	18 18 	IFNZERO "L2";			while(i < n) GOTO L2
+	21 1	RET 1;				return
