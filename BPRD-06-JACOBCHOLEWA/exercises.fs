@@ -1,5 +1,5 @@
 //Excercise 8.1
-//Please see examples/ex3.formatted.out, examples/ex5.formatted.out and examples/ex3.trace.out
+//Please see examples/ex3.formatted, examples/ex5.formatted and examples/ex3.trace
 
 //Exercise 8.2
 //Through this assigment i learned that i can't declare an int * but should declare an int and & to it, otherwise it won't run. The programs and their out and trace is located in e72/
