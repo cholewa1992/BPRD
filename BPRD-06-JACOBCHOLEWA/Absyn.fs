@@ -18,6 +18,9 @@ and expr =
   | Assign of access * expr          (* x=e  or  *p=e  or  a[e]=e   *)
   | Addr of access                   (* &x   or  &*p   or  &a[e]    *)
   | CstI of int                      (* Constant                    *)
+  | PreInc of access                 (* C/C++/Java/C# ++i           *)
+  | PreDec of access                 (* C/C++/Java/C# --i           *)
+  | Ifc of expr * expr * expr        (* Conditional                 *)
   | Prim1 of string * expr           (* Unary primitive operator    *)
   | Prim2 of string * expr * expr    (* Binary primitive operator   *)
   | Andalso of expr * expr           (* Sequential and              *)
@@ -35,6 +38,7 @@ and stmt =
   | Expr of expr                     (* Expression statement   e;   *)
   | Return of expr option            (* Return from method          *)
   | Block of stmtordec list          (* Block: grouping and scope   *)
+  | Switch of expr * (int * stmt) list 
                                                                    
 and stmtordec =                                                    
   | Dec of typ * string              (* Local variable declaration  *)

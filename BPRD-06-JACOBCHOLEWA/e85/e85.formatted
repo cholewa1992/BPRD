@@ -1,0 +1,25 @@
+	24		LDARGS;
+	19 1 5 		CALL(1, L1);
+	25		STOP;
+Label L1
+	13 		GETBP;
+	13 		GETBP;
+	11 		LDI;			n
+	0 5 		CSTI 5;			5
+	10 		SWAP;
+	7 		LT;
+	17 18		IFZERO L2;
+	0 1 		CSTI 1;
+	16 20		GOTO L3;
+Label L2
+	0 0 
+Label L3
+	12 		STI;
+	15 -1 		INCSP -1;
+	13 		GETBP;
+	11 		LDI;
+	22 		PRINTI;
+	15 -1 		INCSP -1;
+	0 10 		CSTI 10;
+	23 		PRINTC;
+	21 1		RETURN 1;

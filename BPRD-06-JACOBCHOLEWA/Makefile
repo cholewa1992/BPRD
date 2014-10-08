@@ -8,4 +8,4 @@ CLex.fs: CLex.fsl
 CPar.fs: CPar.fsy 
 	fsyacc --module CPar CPar.fsy
 clean:
-	rm -rf *out *class CLex.fs CPar.fs CPar.fsi
+	rm -rf *class CLex.fs CPar.fs CPar.fsi

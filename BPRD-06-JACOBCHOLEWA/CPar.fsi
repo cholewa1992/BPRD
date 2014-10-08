@@ -2,6 +2,10 @@
 module CPar
 type token = 
   | EOF
+  | CASE
+  | SWITCH
+  | COLON
+  | QMARK
   | LPAR
   | RPAR
   | LBRACE
@@ -36,12 +40,17 @@ type token =
   | RETURN
   | VOID
   | WHILE
+  | FOR
   | CSTSTRING of (string)
   | NAME of (string)
   | CSTINT of (int)
   | CSTBOOL of (int)
 type tokenId = 
     | TOKEN_EOF
+    | TOKEN_CASE
+    | TOKEN_SWITCH
+    | TOKEN_COLON
+    | TOKEN_QMARK
     | TOKEN_LPAR
     | TOKEN_RPAR
     | TOKEN_LBRACE
@@ -76,6 +85,7 @@ type tokenId =
     | TOKEN_RETURN
     | TOKEN_VOID
     | TOKEN_WHILE
+    | TOKEN_FOR
     | TOKEN_CSTSTRING
     | TOKEN_NAME
     | TOKEN_CSTINT
@@ -96,6 +106,7 @@ type nonTerminalId =
     | NONTERM_StmtOrDecSeq
     | NONTERM_Stmt
     | NONTERM_StmtM
+    | NONTERM_StmtS
     | NONTERM_StmtU
     | NONTERM_Expr
     | NONTERM_ExprNotAccess

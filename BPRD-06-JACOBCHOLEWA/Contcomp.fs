@@ -17,7 +17,7 @@
            bstmtordec.
   
    Pass 2: compile the statements in the given environments.
- *)
+*)
 
 module Contcomp
 
@@ -195,6 +195,15 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) (C : instr list) : instr 
       let (jumptest, C1) = 
            makeJump (cExpr e varEnv funEnv (IFNZRO labbegin :: C))
       addJump jumptest (Label labbegin :: cStmt body varEnv funEnv C1)
+    | Switch(e,sList) ->
+        let (labend, C2) = addLabel (addINCSP -1 C)
+        let rec switch stmts C = 
+                match stmts with
+                | [] -> GOTO labend :: C
+                | (i,stmt)::xs -> 
+                        let (labelse, C1) = addLabel (cStmt stmt varEnv funEnv (GOTO labend :: C))
+                        DUP :: addCST i (EQ :: IFNZRO labelse :: switch xs C1)
+        cExpr e varEnv funEnv (switch sList C2) 
     | Expr e -> 
       cExpr e varEnv funEnv (addINCSP -1 C) 
     | Block stmts -> 
@@ -246,6 +255,12 @@ and cExpr (e : expr) (varEnv : varEnv) (funEnv : funEnv) (C : instr list) : inst
     | Assign(acc, e) -> cAccess acc varEnv funEnv (cExpr e varEnv funEnv (STI :: C))
     | CstI i         -> addCST i C
     | Addr acc       -> cAccess acc varEnv funEnv C
+    | PreInc acc -> cAccess acc varEnv funEnv (DUP :: LDI :: (addCST 1 (ADD :: STI :: C)))
+    | PreDec acc -> cAccess acc varEnv funEnv (DUP :: LDI :: (addCST 1 (SUB :: STI :: C))) 
+    | Ifc(e1,e2,e3) ->
+        let (jumpend, C1) = makeJump C
+        let (labelse, C2) = addLabel (cExpr e3 varEnv funEnv C1)
+        cExpr e1 varEnv funEnv (IFZERO labelse :: cExpr e2 varEnv funEnv (addJump jumpend C2))
     | Prim1(ope, e1) ->
       cExpr e1 varEnv funEnv
           (match ope with

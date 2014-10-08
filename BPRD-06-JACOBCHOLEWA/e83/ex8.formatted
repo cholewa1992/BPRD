@@ -1,0 +1,23 @@
+	24 		LDARGS;
+	19 0 5 		CALL(0, "L1");
+	25		STOP;
+Label L1
+	15 1 		INCSP 1;
+	13 		GETBP;
+	0 20000000 	CSTI 2000000;
+	12 		STI;			int i = 2000000;
+	15 -1 		INCSP -1;
+	16 24 		GOTO L3;		while(i > 0)
+Label L2
+	13		GETBP; 			&i
+	13 		GETBP;			&i
+	11 		LDI;			*i
+	0 1 		CSTI 1;			
+	2 		SUB;			i - 1
+	12 		STI;			i = i - 1
+	15 -1 		INCSP -1;		
+Label L3
+	13		GETBP; 
+	11		LDI; 
+	18 15 		IFNZRO 
+	21 0		RET 0;

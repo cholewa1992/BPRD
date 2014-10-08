@@ -1,0 +1,9 @@
+	0 20000000 	CSTI 20000000 
+	16 7		GOTO L2 
+Label L1
+	0 1		CSTI 1 
+	2		SUB
+Label L2 
+	9 		DUP
+	18 4 		IFNZERO L1
+	25		STOP
