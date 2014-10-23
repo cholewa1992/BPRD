@@ -127,6 +127,15 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) : instr list =
       let labtest  = newLabel()
       [GOTO labtest; Label labbegin] @ cStmt body varEnv funEnv
       @ [Label labtest] @ cExpr e varEnv funEnv @ [IFNZRO labbegin]
+    | Switch(e, sList) ->
+                    let labend = newLabel();
+                    let rec switch stmts = 
+                            match stmts with
+                            | [] -> [GOTO labend]
+                            | (i, stmt)::xs ->
+                                            let labelse = newLabel();
+                                            [DUP; CSTI i; EQ; IFNZRO labelse] @ switch xs @ [Label labelse] @ cStmt stmt varEnv funEnv @ [GOTO labend]
+                    cExpr e varEnv funEnv @ switch sList @ [Label labend; INCSP -1]
     | Expr e -> 
       cExpr e varEnv funEnv @ [INCSP -1]
     | Block stmts -> 
@@ -167,6 +176,12 @@ and cExpr (e : expr) (varEnv : varEnv) (funEnv : funEnv) : instr list =
     | Assign(acc, e) -> cAccess acc varEnv funEnv @ cExpr e varEnv funEnv @ [STI]
     | CstI i         -> [CSTI i]
     | Addr acc       -> cAccess acc varEnv funEnv
+    | PreInc acc     -> cAccess acc varEnv funEnv @ [DUP; LDI; CSTI 1; ADD; STI]
+    | PreDec acc     -> cAccess acc varEnv funEnv @ [DUP; LDI; CSTI 1; SUB; STI]
+    | Ifc(e1,e2,e3) ->
+                    let labelse = newLabel()
+                    let labend = newLabel()
+                    cExpr e1 varEnv funEnv @ [IFZERO labelse] @ cExpr e2 varEnv funEnv @ [GOTO labend; Label labelse] @ cExpr e3 varEnv funEnv @ [Label labend]
     | Prim1(ope, e1) ->
       cExpr e1 varEnv funEnv
       @ (match ope with

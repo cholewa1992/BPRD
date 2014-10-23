@@ -6,12 +6,12 @@ Label L1
 	13 		GETBP;			&r
 	0 1 		CSTI 1;			|
 	1 		ADD			|
-	13 		GETBP;			&n;
+	13 		GETBP;			(puts n on the stack)
 	11 		LDI;			|
-	12 		STI;			r = n;		
-	13 		GETBP;			&n			{ block start
+	12 		STI;			r = n;		(this leaves r on the stack)
+	13 		GETBP;			(puts n on the stack) 		{ block start
 	11 		LDI;			|
-	13 		GETBP;			int r';
+	13 		GETBP;			&r'
 	0 2 		CSTI 2;			|
 	1 		ADD			|
 	19 2 41		CALL (2, "L2")		square(n, &r')
@@ -21,22 +21,22 @@ Label L1
 	1 		ADD;			|
 	11 		LDI;			|
 	22 		PRINTI;			print r';
-	15 -2 		INCSP -2;		(clean n and r' from stack) 	} end
+	15 -2 		INCSP -2;		(clean n and r' from stack) 	 } block end
 	13		GETBP;			&r
 	0 1 		CSTI 1;			|
 	1 		ADD			|
 	11 		LDI;			|
-	22 		PRINTI;			print r';
+	22 		PRINTI;			print r;
 	21 2		RET 2;			return
 Label L2
 	13 		GETBP;			&rp
 	0 1 		CSTI 1;			|
 	1 		ADD;			|
 	11 		LDI;			|
-	13 		GETBP;			&i
+	13 		GETBP;			(puts i on the stack)	
 	11 		LDI;			|
-	13 		GETBP;			&i
+	13 		GETBP;			(puts i on the stack)
 	11 		LDI;			|
 	3 		MUL;			i*i
 	12 		STI;			*rp = i*i
-	21 2		RET 2;			return;
+	21 2		RET 2;			return; (RET 2 becuase there was two input parameters which have to be taken of the stack again)

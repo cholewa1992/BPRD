@@ -6,7 +6,7 @@
 [ 4 -999 1 0 2 1 ]{10: ADD}		pop and add 2 and 1 and push result to the stack (this is &i)
 [ 4 -999 1 0 3 ]{11: CSTI 0}		push 0 to the stack
 [ 4 -999 1 0 3 0 ]{13: STI}		pop 0 and 3 from stack and store 0 in 3 (&i)
-[ 4 -999 1 0 0 ]{14: INCSP -1}		decrement stack pointer
+[ 4 -999 1 0 0 ]{14: INCSP -1}		decrement stack pointer (to remove STI result)
 [ 4 -999 1 0 ]{16: GOTO 41}		jump to 41 (L3 which is the while loop code)
 [ 4 -999 1 0 ]{41: GETBP}		push  bp to the stack (2)
 [ 4 -999 1 0 2 ]{42: CSTI 1}		push 1 to the stack
@@ -21,7 +21,7 @@
 [ 4 -999 1 0 2 1 ]{21: ADD}		pop 2 and 1 and push the result to the stack (this is &i)
 [ 4 -999 1 0 3 ]{22: LDI}		pop 3 and push &3 to the stack (0)
 [ 4 -999 1 0 0 ]{23: PRINTI}		peak and print
-0 [ 4 -999 1 0 0 ]{24: INCSP -1}	decrement stack counter
+0 [ 4 -999 1 0 0 ]{24: INCSP -1}	decrement stack counter (to remove 0 from the stack after printing it)
 [ 4 -999 1 0 ]{26: GETBP}		push bp to the stack (2)
 [ 4 -999 1 0 2 ]{27: CSTI 1}		push 1 to the stack
 [ 4 -999 1 0 2 1 ]{29: ADD}		pop 2 and 1 and add the result to the stack (this is &i)
@@ -32,7 +32,7 @@
 [ 4 -999 1 0 3 0 ]{35: CSTI 1}		push 1 to the stack
 [ 4 -999 1 0 3 0 1 ]{37: ADD}		pop 0 and 1 and push the result to the stack
 [ 4 -999 1 0 3 1 ]{38: STI}		pop 3 and 1 and store 1 in &3 (&i)
-[ 4 -999 1 1 1 ]{39: INCSP -1}		decrement the stack counter
+[ 4 -999 1 1 1 ]{39: INCSP -1}		decrement the stack counter (to remove STI result)
 [ 4 -999 1 1 ]{41: GETBP}		push bp to the stack
 [ 4 -999 1 1 2 ]{42: CSTI 1}		push 1 to the stack
 [ 4 -999 1 1 2 1 ]{44: ADD}		pop 2 and 1 and add the result to the stack (this is &i)
