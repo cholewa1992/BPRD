@@ -1,0 +1,17 @@
+Instructions
+
+- ADD
+    This instruction first untags the the two top elements on the stack, then adds them and lastly tags them again. We tag and untag because every integer is taged to be able to distinguish them from address pointers.
+- CSTI 
+    This instruction tags and pushes an integer to the top of the stack. Is is taged so it can be distinguish from a pointer
+- NIL
+    Pushes a zero to the top of the stack. This is neither a pointer nor an integer as a pointer is a not zero positive integer and because an integer would be tagged.
+- IFZERO
+    This checks whether or not the top element is an pointer or an integer. If it's an integer it untags it before asserting it to zero.
+- CONS
+    This instruction pops the two top elements, allocate a block on the heap and stores them there. It leave a reference to the cons on the top of the stack
+- CAR
+    This instruction pops to top element (heap address) at the stack, looks in the heap at the address, and if it's not null, puts the first word in the heap block on the stack.
+
+- SETCAR
+    
