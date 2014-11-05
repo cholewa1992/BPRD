@@ -81,7 +81,7 @@ typedef unsigned int word;
 
 word* heap;
 word* afterHeap;
-word *freelist;
+word* freelist;
 
 // These numeric instruction codes must agree with ListC/Machine.fs:
 // (Use #define because const int does not define a constant in C)
@@ -379,7 +379,7 @@ void heapStatistics() {
   }
   word* freePtr = freelist;
   while (freePtr != 0) {
-    free++; 
+    free++;
     int length = Length(freePtr[0]);
     if (freePtr < heap || afterHeap < freePtr+length+1) {
       printf("HEAP ERROR: freelist item %d (at heap[%d], length %d) is outside heap\n", 
@@ -405,14 +405,55 @@ void initheap() {
   freelist = &heap[0];
 }
 
+void markChildren(word* p, int s[]){
+	if(Color(p[0]) == White){
+		p[0] = Paint(p[0], Black);
+		for(int i = 1; i <= Length(p[0]); i++){
+			if(!IsInt(p[i]) && p[i] != 0) markChildren((word*) p[i], s);
+		}
+	}
+}
+
 void markPhase(int s[], int sp) {
-  printf("marking ...\n");
-  // TODO: Actually mark something
+	printf("marking ...\n");
+	while(sp > 0){
+		if(!IsInt(s[sp]) && s[sp] != 0)  {
+			markChildren((word*) s[sp],s);
+		}
+		sp--;
+	}
 }
 
 void sweepPhase() {
-  printf("sweeping ...\n");
-  // TODO: Actually sweep
+	printf("sweeping ...\n");
+
+	word* heapPrev = heap;
+	word* heapPtr = heap;
+	word* next = freelist;
+
+	while (heapPtr < afterHeap) {
+		switch(Color(heapPtr[0])){
+			case Black: heapPtr[0] = Paint(heapPtr[0], White); break;
+			case White: 
+				heapPtr[0] = Paint(heapPtr[0], Blue);
+				if(freelist == 0){
+					next = freelist = heapPtr;
+					next[1] = 0;
+				}
+				else if( Color(heapPrev[0]) == Blue){
+					next[0] = mkheader(0, 1 + Length(heapPtr[0]) + Length(next[0]), Blue);
+				}
+				else{
+					next[1] = (word*) heapPtr;
+					next = heapPtr;
+					next[1] = 0;
+				}
+				break; 
+		}
+
+	heapPrev = heapPtr;
+	heapPtr = heapPtr + Length(heapPtr[0]) + 1;
+	}
 }
 
 void collect(int s[], int sp) {

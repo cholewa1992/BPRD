@@ -1,4 +1,4 @@
-// ex31.lc -- a listC source program 
+/ ex31.lc -- a listC source program 
 // Allocates many cons cells but they do not become garbage
 
 void main(int n) {

@@ -1,0 +1,31 @@
+
+Part 1
+	- ADD
+		This instruction first untags the the two top elements on the stack, then adds them and lastly tags them again. We tag and untag because every integer is taged to be able to distinguish them from address pointers.
+	- CSTI 
+		This instruction tags and pushes an integer to the top of the stack. Is is taged so it can be distinguish from a pointer
+	- NIL
+		Pushes a zero to the top of the stack. This is neither a pointer nor an integer as a pointer is a not zero positive integer and because an integer would be tagged.
+	- IFZERO
+		This checks whether or not the top element is an pointer or an integer. If it's an integer it untags it before asserting it to zero.
+	- CONS
+		This instruction pops the two top elements, allocate a block on the heap and stores them there. It leave a reference to the cons on the top of the stack
+	- CAR
+		This instruction pops to top element (heap address) at the stack, looks in the heap at the address, and if it's not null, puts the first word in the heap block on the stack.
+
+	- SETCAR
+		This instruction pops the two top element (word to store and addresse) and stores the element at the given address at the first position on the memblock. It leaves the address on top of the stack
+	    
+
+Part 2
+	- Length
+		This macro first shifts away the two lowest value bits (to get rid of the GC bits) and then use the AND operator with 2^22 to get the length value (which is 22bits) from the remaining header bits.
+	- Color
+		This macro takes the last two bits (the GC or color bits) by using the AND operator.
+	- Paint
+		This macro first takes everything but the last 2 bits (using a negated AND) and then adds the new color to the header using the OR operator
+Part 3
+	The abstract machine calls the allocate methode when creating a new object that should be stored on the heap. The only object that we store on the heap right now is the CONS element. The allocate calles the GC if there is not enough free space to allocate the new cons. The GC is not to my knowledge called at other times than this.
+
+Part 4
+	Only when allocate is called as described in the above.
