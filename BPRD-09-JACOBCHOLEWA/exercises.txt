@@ -1,0 +1,25 @@
+Exercise 11.1
+	i) 	Please see the file ListLength.fs
+	ii) 	Then you would get the length of the list multiplied with two
+	iii) 	The relation is that they function in the same way, but because the function is so simple we can replace the continuation with an accumelating integer.	
+
+Exercise 11.2
+	i) 	Please see the file ListRev.fs
+	ii)	Then you get the reversed list concatinated with itself [1;2;3] -> [3;2;1;3;2;1]
+	
+Exercise 11.3
+	Please see the file ListProd.fs	
+
+Exercise 11.4
+	Please see the file ListProdImproved.fs
+
+Exercise 11.8
+	i) 
+		run (Every(Write(Prim("+", CstI 1, Prim("*", CstI 2, FromTo(1, 4))))));;
+		run (Every(Write(  Prim("+", Prim("*", CstI 10, FromTo(2,4)), FromTo(1,2)))));;
+
+	ii)	I assume that i'm looking for 56 and not 8 as in 8*7=56
+		run (Write(  Prim("<", CstI 50, Prim("*", CstI 7, FromTo(1,10)))));;
+
+	iii)	Please see the Icon.fs file
+	iv) 	I have tested it using following: run (Write(Prim("<", CstI 50, Unary("multiples", CstI 7))));;	
