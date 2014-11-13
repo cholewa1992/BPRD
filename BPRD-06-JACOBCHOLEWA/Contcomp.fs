@@ -196,12 +196,12 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) (C : instr list) : instr 
            makeJump (cExpr e varEnv funEnv (IFNZRO labbegin :: C))
       addJump jumptest (Label labbegin :: cStmt body varEnv funEnv C1)
     | Switch(e,sList) ->
-        let (labend, C2) = addLabel (addINCSP -1 C)
+        let (labend, C2) = makeJump (addINCSP -1 C)
         let rec switch stmts C = 
                 match stmts with
-                | [] -> GOTO labend :: C
+                | [] -> addJump labend C
                 | (i,stmt)::xs -> 
-                        let (labelse, C1) = addLabel (cStmt stmt varEnv funEnv (GOTO labend :: C))
+                        let (labelse, C1) = addLabel (cStmt stmt varEnv funEnv (addJump labend C))
                         DUP :: addCST i (EQ :: IFNZRO labelse :: switch xs C1)
         cExpr e varEnv funEnv (switch sList C2) 
     | Expr e -> 
