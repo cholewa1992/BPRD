@@ -1,0 +1,2 @@
+open ParseAndContcomp;;
+contCompileToFile (fromFile "examples/ex13.c") "ex13.out";;

@@ -1,0 +1,11 @@
+Exercise 12.1
+	Please see Contcomp.fs
+
+Exercise 12.2
+	Please see Contcomp.fs
+Exercise 12.3
+	Please see Contcomp.fs, CPar.fsy and CLex.fsl
+	The constant optimization from exercise 12.2 is done, but jumps are still made.
+Exercise 12.4
+	Please see CPar.fsy.
+	The code quality is slightly worse and we no longer have the if and while loop optimizations. There is ~10 extra instructions in the new code.
