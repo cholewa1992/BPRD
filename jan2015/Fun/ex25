@@ -1,0 +1,5 @@
+open ParseAndRunHigher;;
+run (fromString @"(1,(2,3))");;
+run (fromString @"fst(1,(2,3))");;
+run (fromString @"snd(1,(2,3))");;
+run (fromString @"let x = 3 in ((let f x = x * 2 in f x end), (let f x = x + 2 in f x end)) end") ;;

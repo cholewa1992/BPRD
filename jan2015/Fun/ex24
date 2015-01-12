@@ -1,0 +1,5 @@
+open ParseAndRunHigher;;
+run (fromString "(1,true)");;
+run (fromString "fst(1,true)");;
+run (fromString "snd(1,true)");;
+

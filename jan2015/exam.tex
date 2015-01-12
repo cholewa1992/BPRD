@@ -9,6 +9,7 @@
 \usepackage{color}
 \usepackage[table]{xcolor}
 \usepackage{graphicx}
+\usepackage{amsmath}
 
 \usepackage{tikz}
 \usetikzlibrary{automata,positioning}
@@ -133,7 +134,7 @@ Jeg erklærer hermed at jeg selv har lavet hele denne eksamensbevarelse uden hj�
 \newpage
 
 \chapter*{Opgave 1}
-\section*{Spørgsmål 1}
+\section*{Spørgsmål 1.1}
 Det regulære udtryk $e(fd*)*x$ beskriver et bar system. Du kan gå ind i baren, $e(nter)$, og her kan du så hente øl, $f(etch)$, (Du behøver ikke). Når du har en øl kan du hente en mere eller du kan drikke af den du allerede har 0 til flere gange $d(rink)$. Tilsidst kan du gå ud af baren, $e(xit)$, lige gyldigt om du har eller ikke har hentet og drukket øl.
 
 Dette regulære udtryk beskriver altså for eksempel disse strenge:
@@ -151,7 +152,12 @@ $fdx$,
 $efd$,
 $edx$
 \end{center}
-\section*{Spørgsmål 2}
+\section*{Spørgsmål 1.2}
+\label{sec:sp2}
+
+Jeg har i dette spørgsmål konstrueret en NFA ved hjælp af en systematisk konstruktion som vist i undervisningen og \textit{Converting Reguler Expressions to Discrete Finite Automata: A tutorial} af David Christiansen\\
+
+\begin{center}
 \begin{tikzpicture}[shorten >=1pt,node distance=2cm,on grid,auto] 
    \node[state,initial]   (q_0)                         {$q_0$}; 
    \node[state]           (q_1) [right=of q_0]          {$q_1$};
@@ -179,13 +185,16 @@ $edx$
           edge              node {$\epsilon$}  (q_4)
     (q_7) edge              node {x}           (q_8);
 \end{tikzpicture}
+\end{center}
+\newpage
+\section*{Spørgsmål 1.3}
 
-\section*{Spørgsmål 3}
+Jeg har i denne opgave brugt en systematisk tilgang til at oversætte min NFA vist i spørgsmål 2. Det første jeg gør er at prøve at fjerne alle $\epsilon$ overgange. Det kan jeg opnå ved at lave en DFA hvor hver stadie svare til et sæt stadier fra den gamle NFA. Et nyt stadie i DFA'en svare til et stadie og alle de stadier som kan nås med $\epsilon$ overgange fra det første stadie. I tabellen neden for viser jeg de nye DFA stadier, hvilke overgange de har til andre stadier og hvilke gamle NFA stadier de svare til.
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|l|l|l|l|l|}
 \hline
-State      & e   & f   & d   & e      & NFA States                            \\ \hline
+State      & e   & f   & d   & x      & NFA States                            \\ \hline
 $S_0$      & $S_1$  & -      & -      & -     & $\{q_0\}$                     \\
 $S_1$      & -      & $S_3$  & -      & $S_2$ & $\{q_1, q_2, q_7\}$           \\
 $S_2$      & -      & -      & -      & -     & $\{q_8\}$                     \\
@@ -194,6 +203,9 @@ $S_4$      & -      & $S_3$  & $S_4$  & $S_2$ & $\{q_2, q_4, q_5, q_6, q_7\}$ \\
 \end{tabular}
 \end{table}
 
+Derefter har jeg tegnet en DFA svarende til tabellen
+
+\begin{center}
 \begin{tikzpicture}[shorten >=1pt,node distance=3cm,on grid,auto] 
    \node[state,initial]   (s_0)                         {$S_0$}; 
    \node[state]           (s_1) [right=of s_0]          {$S_1$};
@@ -216,7 +228,219 @@ $S_4$      & -      & $S_3$  & $S_4$  & $S_2$ & $\{q_2, q_4, q_5, q_6, q_7\}$ \\
           ;
 
 \end{tikzpicture}
-\section*{Spørgsmål 4}
+\end{center}
+\section*{Spørgsmål 1.4}
+
+Jeg er lidt i tvivl om hvordan dette sprog skal tolkes. Jeg går derfor i opgaven ud fra at man skal \textit{fetch beer} før man kan \textit{drink beer} og \textit{spill beer}. Jeg går ud fra at man kun må \textit{fetch beer} \textbf{én} gang da da det ikke vises i nogle af eksemplerne at der hentes mere end en øl. Ved denne forståelse kan man danne dette regulære udtryk for sproget:
+
+\begin{align}
+f[sd]*
+\end{align}
+
+\chapter*{Opgave 2}
+\section*{Spørgsmål 2.1}
+
+I denne opgave har jeg implementeret \texttt{Pair, Fst} og \texttt{Snd} til den abstrakte syntaks for HigherFun sproget. Dette har jeg gjort ved at ændre i \texttt{absyn.fs} og udvide \texttt{expr} typen. Der vises her kun et udsnit af \texttt{expr} typen.
+
+\begin{lstlisting}[language=ML]
+type expr = 
+  | Pair of expr * expr
+  | Fst of expr 
+  | Snd of expr 
+  ...
+\end{lstlisting}
+
+\section*{Spørgsmål 2.2}
+
+I denne opgave bygger jeg videre på opgave 2.1 og udvider nu \texttt{HigherFun.fs} til at kunne bruge den udvidede abstrakte syntaks. Når et udtryk evalueres i vores lille funktionelle sprog returneres en værdi med typen \texttt{value}. Jeg har nu udvidet \texttt{value} typen med \texttt{ValuePair}, altså et par af værdier, så vi kan evaluere den nye \texttt{Pair} udtryk
+
+\begin{lstlisting}[language=ML]
+type value = 
+  | Int of int
+  | ValuePair of value * value
+  | Closure of string * string * expr * value env
+\end{lstlisting}
+
+Derefter har jeg ændret i evaluerings logikken så det nu kan evaluere udtryk med \texttt{Pair, Fst} og \texttt{Snd}. Der vises her kun et lille del af evaluerings logikken. Som det kan ses evaluerer vi \texttt{Pair} ved både at evaluere \texttt{e1} og \texttt{e2} til et \texttt{ValuePair}. Jeg bruger \textit{Pattern Matching} til at evaluere \texttt{Fst} og \texttt{Snd} udtryk og sørger samtidig for at det kun er den del af parret man ønsker at bruge der bliver evalueret. Hvis \texttt{Fst} og \texttt{Snd} bliver kaldt med andet end et \texttt{Pair} som indre udtryk vil de ikke blive \textit{matched} og programmet vil fejle med beskeden \textit{Invalid syntax}
+
+
+\begin{lstlisting}[language=ML]
+let rec eval (e : expr) (env : value env) : value =
+    match e with
+    ...
+    | Pair(e1,e2)     -> ValuePair((eval e1 env),(eval e2 env)) 
+    | Fst(Pair(e1,e2))  -> eval e1 env
+    | Snd(Pair(e1,e2))  -> eval e2 env
+    ...
+    | _                 -> failwith "Invalid syntax"
+\end{lstlisting}
+
+Jeg tolker i denne opgave ``Bemærk at \texttt{Fst} og \texttt{Snd} skal fejle, hvis værdien de anvendes på ikke er et parudtryk.'' som at jeg kun skal kunne tolke udtryk som
+
+\begin{lstlisting}[language=ML]
+let ex = Snd(Pair (CstI 1,Pair (CstI 2,CstI 3)))
+\end{lstlisting}
+
+og ikke
+
+\begin{lstlisting}[language=ML]
+let ex = Fst(Snd(Pair (CstI 1,Pair (CstI 2,CstI 3))))
+\end{lstlisting}
+
+Jeg forklare i Spørgsmål 2.3 hvad et betyder for funktionaliteten og hvordan man kunne have implementeret \texttt{eval} så den kunne evaluere udtryk som det sidste 
+
+\begin{lstlisting}[language=ML]
+let ex = Fst(Pair(CstI 1, CstI 2))
+\end{lstlisting}
+
+
+\section*{Spørgsmål 2.3}
+
+Jeg har brugt et lille hjælpe program \texttt{run} som kan findes i appendiks. Filen \texttt{ex23} som indeholder mine eksempler kan også findes i appendiks A.
+
+\begin{lstlisting}[language=bash]
+$ ./run < ex23
+  ...
+> val ex1 : expr = Pair (CstI 1,Pair (CstI 2,CstI 3))
+> val ex2 : expr = Fst (Pair (CstI 1,Pair (CstI 2,CstI 3)))
+> val ex3 : expr = Snd (Pair (CstI 1,Pair (CstI 2,CstI 3)))
+> val ex4 : expr =
+  Let
+    ("x",CstI 3,
+     Pair
+       (Letfun ("f","x",Prim ("*",Var "x",CstI 2),Call (Var "f",Var "x")),
+        Letfun ("f","x",Prim ("+",Var "x",CstI 2),Call (Var "f",Var "x"))))
+
+> val res1 : value = ValuePair (Int 1,ValuePair (Int 2,Int 3))
+> val res2 : value = Int 1
+> val res3 : value = ValuePair (Int 2,Int 3)
+> val res4 : value = ValuePair (Int 6,Int 5)
+\end{lstlisting}
+
+Min implementation fungere, men et valg jeg træf var at gøre så \texttt{Fst} og \texttt{Snd} kun evaluere den del af parret som der er brug for. Det gør så også at min implementation ikke kan evaluere udtryk som disse:
+
+\begin{lstlisting}[language=ML]
+let ex5 = Snd(Snd(ex1));;
+let ex6 = Fst(ex4);;
+\end{lstlisting}
+
+da \texttt{Fst} og \texttt{Snd} \textit{pattern matches} udtrykket der skal evalueres ud af udtrykket. Ved at implementere metoden på denne måde,
+
+\begin{lstlisting}[language=ML]
+let rec eval (e : expr) (env : value env) : value =
+    match e with
+    ...
+    | Pair(e1,e2)     -> ValuePair((eval e1 env),(eval e2 env)) 
+    | Fst(e)  ->  match eval e env with
+                  | ValuePair(v1,v2)  -> v1
+                  | _                 -> failwith "not a pair"
+    | Snd(e)  ->  match eval e env with
+                  | ValuePair(v1,v2)  -> v2
+                  | _                 -> failwith "not a pair" 
+    ...
+    | _                 -> failwith "Invalid syntax"
+\end{lstlisting}
+
+kunne man have evalueret udtryk som \texttt{ex5} og \texttt{ex6}, men så bliver man nødt til at evaluere hele parret hvilke ikke gøres i den nuværende implementation.
+
+\section*{Spørgsmål 2.4}
+
+I denne opgave har jeg udvidet parser og lexer specifikationen til at indeholde de tre nye udtryk \texttt{Pair, Fst} og \texttt{Snd} med syntaksen
+
+\begin{lstlisting}[language=ML]
+(1,true)
+fst(1,true)
+snd(1,true)
+\end{lstlisting}
+
+Det første jeg har gjort er at tilføje de nye keywords og token. Parenteser er allerede lagt ind som tokens. 
+
+\begin{lstlisting}[language=ML]
+let keyword s =
+    match s with
+    ...
+    | "fst"   -> FST
+    | "snd"   -> SND
+    | _       -> NAME s 
+
+...
+
+rule Token = parse
+  ...
+  | ','             { COMMA }
+  ...
+\end{lstlisting}
+
+Derefter udvider jeg parser specifikationen.
+
+\begin{lstlisting}[language=ML]
+Expr:
+  ...
+  | LPAR Expr COMMA Expr RPAR           { Pair($2,$4)            }
+  | FST Expr                            { Fst($2)                }
+  | SND Expr                            { Snd($2)                }
+  ...
+;
+\end{lstlisting}
+
+Jeg har testet at implementationen virker med følgende udtryk
+
+\begin{lstlisting}[language=ML]
+run (fromString "(1,true)");;
+run (fromString "fst(1,true)");;
+run (fromString "snd(1,true)");;
+\end{lstlisting}
+
+der evaluere til
+
+\begin{lstlisting}[language=bash]
+$ ./run < ex24
+  ...
+> val it : HigherFun.value = ValuePair (Int 1,Int 1)
+> val it : HigherFun.value = Int 1
+> val it : HigherFun.value = Int 1
+\end{lstlisting}
+
+Filen \texttt{ex24} kan ses i appendiks A.
+
+\section*{Spørgsmål 2.5}
+
+Jeg har omskrevet mine eksempler fra opgave 2.3 til
+
+\begin{lstlisting}[language=ML]
+(1,(2,3))
+fst(1,(2,3))
+snd(1,(2,3))
+let x = 3 in ((let f x = x * 2 in f x end), (let f x = x + 2 in f x end)) end
+\end{lstlisting}
+
+og har derefter evalueret dem
+
+\begin{lstlisting}[language=bash]
+$ ./run < ex25
+  ...
+> val it : HigherFun.value = ValuePair (Int 1,ValuePair (Int 2,Int 3))
+> val it : HigherFun.value = Int 1
+> val it : HigherFun.value = ValuePair (Int 2,Int 3)
+> val it : HigherFun.value = ValuePair (Int 6,Int 5)
+\end{lstlisting}
+
+Filen \texttt{ex25} kan ses u appendiks A.
+
+\section*{Spørgsmål 2.6}
+
+\appendix
+\chapter{Hjælpe metoder til opgave 2}
+\section*{run}
+\lstinputlisting[language=bash]{Fun/run}
+\section*{ex23}
+\lstinputlisting[language=ML]{Fun/ex23}
+\section*{ex24}
+\lstinputlisting[language=ML]{Fun/ex24}
+\section*{ex25}
+\lstinputlisting[language=ML]{Fun/ex25}
+
+
 
 \label{LastPage}
 \end{document}
