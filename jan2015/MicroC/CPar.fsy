@@ -166,7 +166,6 @@ Exprs1:
 Const:
     Number                              { $1       }
   | CSTBOOL                             { $1       }
-  | MINUS CSTINT                        { - $2     }
   | NULL                                { -1       }
 ;
 

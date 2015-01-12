@@ -665,7 +665,7 @@ Ran 0.0 seconds
 
 \section*{Spørgsmål 3 og 4}
 
-Programmet vist i opgave 3.3 vil ikke virke fordi at b peger på adressen for det første element arrayet $q$. Da vores implementation kræver at vi har adressen på elementet i slutningen af arrayet vil dette ikke virke. Denne implementation giver os altså længden mellem det første element i arrayet og den nye pointer i stedet for arrayets rigtige længde.
+Programmet vist i opgave 3.3 vil ikke virke fordi at $b$ peger på adressen for det første element i arrayet $q$. Da vores implementation kræver at vi har adressen på elementet i slutningen af arrayet vil dette ikke virke. Denne implementation giver os altså længden mellem det første element i arrayet og pointer $b$'s placering på stakken i stedet for arrayets rigtige længde.
 
 
 \begin{lstlisting}[language=bash]
@@ -675,7 +675,7 @@ Ran 0.0 seconds
 
 \end{lstlisting}
 
-Programmet vist i 3.4 virke da vi her laver en pointer til arrayet hvilket altså er en pointer til arrayets sidste element $a$ som implementationen bruger.
+Programmet vist i 3.4 virke da vi her laver en pointer til arrayet hvilket altså er en pointer til arrayets sidste element $a$ som vores naive \texttt{ARRLEN} implementationen bruger.
 
 \begin{lstlisting}[language=bash]
 $ ./c-run ex34
@@ -686,11 +686,9 @@ Ran 0.0 seconds
 \chapter*{Opgave 4}
 \section*{Spørgsmål 1}
 
-Jeg har i denne opgave implementeret erklæring af nye arrays med syntaksen \texttt{int a[b..s..e]} hvor $b$ er den først værdi, $s$ er det der lægges til og $e$ den maksimale værdi.
+Jeg har i denne opgave implementeret erklæring af nye arrays med syntaksen \texttt{int a[b..s..e]} hvor $b$ er den først værdi, $s$ er det der lægges til for hvert trin og $e$ den maksimale værdi.
 
 Jeg har implementeret denne løsning ved at lave en ny type TypR(t,b,s,e) som når den allokeres opretter et nyt array af typen \texttt{TypA} og udfylder arrayet med talserien.
-
-
 
   \begin{lstlisting}[language=ML]
 type typ =
@@ -722,7 +720,6 @@ Vardesc:
 Const:
     Number                              { $1       }
   | CSTBOOL                             { $1       }
-  | MINUS CSTINT                        { - $2     }
   | NULL                                { -1       }
 ;
 Number:
@@ -731,7 +728,7 @@ Number:
 ;
 \end{lstlisting}
 
-Tilsidste har jeg implementeret logikken i kompileren. Jeg tillader kun at man initialisere int arrays.
+Til sidste har jeg implementeret logikken i kompileren. Jeg tillader kun at man initialisere int arrays. I stedet for at bruge kommandoen \texttt{INCSP i} for at initialisere tomme plader på stakken tilføjer jeg en \texttt{CSTI i} kommando for hvert element i rangen og fylder på den måde den nye array op med værdierne fra rangen. Til sidst ligger jeg en reference til det første array element på stakken ligesom ved en normal array initialisering.
 
 \begin{lstlisting}[language=ML]
 let allocate (kind : int -> var) (typ, x) (varEnv : varEnv) : varEnv * instr list =
@@ -753,7 +750,7 @@ Jeg har for at kunne teste implementationen skrevet et lille test program der ta
 
 \lstinputlisting[language=C]{MicroC/exrange.c}
 
-Hvilket evaluere til hvilket var det forventede resultat.
+Hvilket evaluere til det forventede resultat.
 
 \begin{lstlisting}[language=bash]
 $ ./c-run exrange
@@ -766,7 +763,7 @@ Ran 0.001 seconds
 \section*{run}
 \lstinputlisting[language=bash]{Fun/run}
 \section*{Makefile}
-\lstinputlisting[language=bash]{Fun/Makefile}
+\lstinputlisting[language=make]{Fun/Makefile}
 \section*{ex23}
 \lstinputlisting[language=ML]{Fun/ex23}
 \section*{ex24}
@@ -778,6 +775,14 @@ Ran 0.001 seconds
 \section*{c-run}
 \lstinputlisting[language=bash]{MicroC/c-run}
 \section*{Makefile}
-\lstinputlisting[language=bash]{MicroC/Makefile}
+\lstinputlisting[language=make]{MicroC/Makefile}
+\section*{ex33.c}
+\lstinputlisting[language=C]{MicroC/ex33.c}
+\section*{ex34.c}
+\lstinputlisting[language=C]{MicroC/ex34.c}
+\section*{exarrlen.c}
+\lstinputlisting[language=C]{MicroC/exarrlen.c}
+\section*{exrange.c}
+\lstinputlisting[language=C]{MicroC/exrange.c}
 \label{LastPage}
 \end{document}
