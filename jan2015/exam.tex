@@ -155,7 +155,7 @@ $edx$
 \section*{Spørgsmål 1.2}
 \label{sec:sp2}
 
-Jeg har i dette spørgsmål konstrueret en NFA ved hjælp af en systematisk konstruktion som vist i undervisningen og \textit{Converting Reguler Expressions to Discrete Finite Automata: A tutorial} af David Christiansen\\
+Jeg har i dette spørgsmål konstrueret en NFA ved hjælp af en systematisk konstruktion som vist i undervisningen og i \textit{Converting Reguler Expressions to Discrete Finite Automata: A tutorial} af David Christiansen\\
 
 \begin{center}
 \begin{tikzpicture}[shorten >=1pt,node distance=2cm,on grid,auto] 
@@ -231,7 +231,7 @@ Derefter har jeg tegnet en DFA svarende til tabellen
 \end{center}
 \section*{Spørgsmål 1.4}
 
-Jeg er lidt i tvivl om hvordan dette sprog skal tolkes. Jeg går derfor i opgaven ud fra at man skal \textit{fetch beer} før man kan \textit{drink beer} og \textit{spill beer}. Jeg går ud fra at man kun må \textit{fetch beer} \textbf{én} gang da da det ikke vises i nogle af eksemplerne at der hentes mere end en øl. Ved denne forståelse kan man danne dette regulære udtryk for sproget:
+Jeg er lidt i tvivl om hvordan dette sprog skal tolkes. Jeg går derfor i opgaven ud fra at man skal \textit{fetch beer} før man kan \textit{drink beer} og \textit{spill beer}. Jeg går ud fra at man kun må \textit{fetch beer} \textbf{én} gang da det ikke vises i nogle af eksemplerne at der hentes mere end en øl. Ved denne forståelse kan man danne dette regulære udtryk for sproget:
 
 \begin{align*}
 f[sd]*
@@ -252,7 +252,7 @@ type expr =
 
 \section*{Spørgsmål 2.2}
 
-I denne opgave bygger jeg videre på opgave 2.1 og udvider nu \texttt{HigherFun.fs} til at kunne bruge den udvidede abstrakte syntaks. Når et udtryk evalueres i vores lille funktionelle sprog returneres en værdi med typen \texttt{value}. Jeg har nu udvidet \texttt{value} typen med \texttt{ValuePair}, altså et par af værdier, så vi kan evaluere den nye \texttt{Pair} udtryk
+I denne opgave bygger jeg videre på opgave 2.1 og udvider nu \texttt{HigherFun.fs} til at kunne bruge den udvidede abstrakte syntaks. Når et udtryk evalueres i vores lille funktionelle sprog returneres en værdi med typen \texttt{value}. Jeg har nu udvidet \texttt{value} typen med \texttt{ValuePair}, altså et par af værdier, så vi kan evaluere det nye \texttt{Pair} udtryk
 
 \begin{lstlisting}[language=ML]
 type value = 
@@ -261,7 +261,7 @@ type value =
   | Closure of string * string * expr * value env
 \end{lstlisting}
 
-Derefter har jeg ændret i evaluerings logikken så det nu kan evaluere udtryk med \texttt{Pair, Fst} og \texttt{Snd}. Der vises her kun et lille del af evaluerings logikken. Som det kan ses evaluerer vi \texttt{Pair} ved både at evaluere \texttt{e1} og \texttt{e2} til et \texttt{ValuePair}. Jeg bruger \textit{Pattern Matching} til at evaluere \texttt{Fst} og \texttt{Snd} udtryk og sørger samtidig for at det kun er den del af parret man ønsker at bruge der bliver evalueret. Hvis \texttt{Fst} og \texttt{Snd} bliver kaldt med andet end et \texttt{Pair} som indre udtryk vil de ikke blive \textit{matched} og programmet vil fejle med beskeden \textit{Invalid syntax}
+Derefter har jeg ændret i evaluerings logikken så der nu kan evalueres udtryk med \texttt{Pair, Fst} og \texttt{Snd}. Der vises her kun et lille del af evaluerings logikken. Som det kan ses evaluerer vi \texttt{Pair} ved både at evaluere \texttt{e1} og \texttt{e2} til et \texttt{ValuePair}. Jeg bruger \textit{Pattern Matching} til at evaluere \texttt{Fst} og \texttt{Snd} udtryk og sørger samtidig for at det kun er den del af parret man bruger der bliver evalueret. Hvis \texttt{Fst} og \texttt{Snd} bliver kaldt med andet end et \texttt{Pair} som indre udtryk vil de ikke blive \textit{matched} og programmet vil fejle med beskeden \textit{Invalid syntax}
 
 
 \begin{lstlisting}[language=ML]
@@ -287,12 +287,7 @@ og ikke
 let ex = Fst(Snd(Pair (CstI 1,Pair (CstI 2,CstI 3))))
 \end{lstlisting}
 
-Jeg forklare i Spørgsmål 2.3 hvad et betyder for funktionaliteten og hvordan man kunne have implementeret \texttt{eval} så den kunne evaluere udtryk som det sidste 
-
-\begin{lstlisting}[language=ML]
-let ex = Fst(Pair(CstI 1, CstI 2))
-\end{lstlisting}
-
+Jeg forklare i Spørgsmål 2.3 hvad det betyder for funktionaliteten og hvordan man kunne have implementeret \texttt{eval} så den kunne evaluere udtryk som det sidste 
 
 \section*{Spørgsmål 2.3}
 
@@ -324,7 +319,7 @@ let ex5 = Snd(Snd(ex1));;
 let ex6 = Fst(ex4);;
 \end{lstlisting}
 
-da \texttt{Fst} og \texttt{Snd} \textit{pattern matches} udtrykket der skal evalueres ud af udtrykket. Ved at implementere metoden på denne måde,
+Ved at implementere metoden på denne måde kunne man have evalueret udtryk som \texttt{ex5} og \texttt{ex6}, men så bliver man nødt til at evaluere hele parret hvilke ikke gøres i den nuværende implementation.
 
 \begin{lstlisting}[language=ML]
 let rec eval (e : expr) (env : value env) : value =
@@ -340,8 +335,6 @@ let rec eval (e : expr) (env : value env) : value =
     ...
     | _                 -> failwith "Invalid syntax"
 \end{lstlisting}
-
-kunne man have evalueret udtryk som \texttt{ex5} og \texttt{ex6}, men så bliver man nødt til at evaluere hele parret hvilke ikke gøres i den nuværende implementation.
 
 \section*{Spørgsmål 2.4}
 
@@ -425,7 +418,7 @@ $ ./run < ex25
 > val it : HigherFun.value = ValuePair (Int 6,Int 5)
 \end{lstlisting}
 
-Filen \texttt{ex25} kan ses u appendiks A.
+Filen \texttt{ex25} kan ses i appendiks A.
 
 \section*{Spørgsmål 2.6}
 
@@ -577,7 +570,7 @@ let rec emitints getlab instr ints =
     | ARRLEN         -> CODEINDEX  :: ints
 \end{lstlisting}
 
-Nu da kommandoen er tilføjet til den abstrakte maskines syntaks skal vi ændre den abstrakte maskine til at udfører kommandoen. Elementet på et arrays adresse $a$, som lægger lige efter arrayets elementer, er en pointer til arrayets første element på adresse $q$. Der ved kan man udregne arrayets længde ud da $arrlen = a-q$.
+Nu da kommandoen er tilføjet til den abstrakte maskines syntaks skal vi ændre den abstrakte maskine til at kunne udfører kommandoen. Elementet på et arrays adresse $a$, som lægger lige efter arrayets elementer, er en pointer til arrayets første element på adresse $q$. Der ved kan man udregne arrayets længde ud da $arrlen = a-q$.
 
 Før \texttt{ARRLEN} kommandoen kaldes lægges array adressen på stakken, og arrayets længde kan så udregnes ved
 
@@ -644,7 +637,7 @@ ExprNotAccess:
 ;
 \end{lstlisting}
 
-Til sidste implementeres operatoren i Kompileren. \texttt{|arr|} parses som en Access, men vi har brug for den som en Addr, derfor \textit{Pattern matcher} vi adressen og pakker den ind som en adresse.
+Til sidste implementeres operatoren i Kompileren. \texttt{|arr|} parses som en \texttt{Access}, men vi har brug for den som en \texttt{Addr}, derfor \textit{Pattern matcher} vi adressen og pakker den ind som en \texttt{Addr}.
 
 \begin{lstlisting}[language=ML]
 and cExpr (e : expr) (varEnv : varEnv) (funEnv : funEnv) : instr list = 
