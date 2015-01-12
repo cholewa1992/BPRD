@@ -3,12 +3,7 @@ open HigherFun;;
 let ex1 = Pair(CstI 1, Pair(CstI 2, CstI 3));;
 let ex2 = Fst(ex1);;
 let ex3 = Snd(ex1);;
-let ex4 = Let ( "x", CstI 3,
-           Pair(
-              Letfun ("f","x",
-                  Prim("*", Var "x", CstI 2),
-                  Call(Var "f", Var "x")),
-              Letfun ("f", "x",)));;
+let ex4 = Let("x",CstI 3, Pair (Letfun ("f","x",Prim ("*",Var "x",CstI 2),Call (Var "f",Var "x")), Letfun ("f","x",Prim ("+",Var "x",CstI 2),Call (Var "f",Var "x"))));;
 //let ex5 = Snd(Snd(ex1));;
 //let ex6 = Fst(ex4);;
 let res1 = eval ex1 [];;
