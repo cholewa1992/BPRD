@@ -12,6 +12,7 @@ type typ =
   | TypC                             (* Type char                   *)
   | TypA of typ * int option         (* Array type                  *)
   | TypP of typ                      (* Pointer type                *)
+  | TypR of typ * int * int * int
                                                                    
 and expr =                                                         
   | Access of access                 (* x    or  *p    or  a[e]     *)

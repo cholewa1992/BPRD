@@ -74,6 +74,13 @@ let allocate (kind : int -> var) (typ, x) (varEnv : varEnv) : varEnv * instr lis
       let newEnv = ((x, (kind (fdepth+i), typ)) :: env, fdepth+i+1)
       let code = [INCSP i; GETSP; CSTI (i-1); SUB]
       (newEnv, code)
+    | TypR (t, i1, i2, i3) ->
+      let arr = [|i1 .. i2 .. i3|]
+      let newEnv = ((x, (kind (fdepth+arr.Length), typ)) :: env, fdepth+arr.Length+1)
+      let rec add (arr:int list) (length:int)  (newEnv:varEnv) (code:instr list) : varEnv * instr list  = match arr with 
+      | []    -> (newEnv, (code @ [GETSP; CSTI (length-1); SUB]))
+      | x::xs -> add xs length newEnv <| code @ [CSTI x] 
+      add (arr |> Array.toList) arr.Length newEnv [] 
     | _ -> 
       let newEnv = ((x, (kind (fdepth), typ)) :: env, fdepth+1)
       let code = [INCSP 1]
@@ -167,6 +174,7 @@ and cExpr (e : expr) (varEnv : varEnv) (funEnv : funEnv) : instr list =
     | Assign(acc, e) -> cAccess acc varEnv funEnv @ cExpr e varEnv funEnv @ [STI]
     | CstI i         -> [CSTI i]
     | Addr acc       -> cAccess acc varEnv funEnv
+    | Prim1(ope, Access acc) when ope = "arrlen"  -> cExpr (Addr acc) varEnv funEnv @ [ARRLEN]
     | Prim1(ope, e1) ->
       cExpr e1 varEnv funEnv
       @ (match ope with

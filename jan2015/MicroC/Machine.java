@@ -35,7 +35,8 @@ class Machine {
     GOTO = 16, IFZERO = 17, IFNZRO = 18, CALL = 19, TCALL = 20, RET = 21, 
     PRINTI = 22, PRINTC = 23, 
     LDARGS = 24,
-    STOP = 25;
+    STOP = 25,
+    ARRLEN = 26;
 
   final static int STACKSIZE = 1000;
   
@@ -133,6 +134,9 @@ class Machine {
 	break;
       case STOP:
         return sp;
+      case ARRLEN:
+	     s[sp] = s[sp] - s[s[sp]];
+	     break;
       default:                  
         throw new RuntimeException("Illegal instruction " + p[pc-1] 
                                    + " at address " + (pc-1));
@@ -170,6 +174,7 @@ class Machine {
     case PRINTC: return "PRINTC";
     case LDARGS: return "LDARGS";
     case STOP:   return "STOP";
+    case ARRLEN: return "ARRLEN";
     default:     return "<unknown>";
     }
   }

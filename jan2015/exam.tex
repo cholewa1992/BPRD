@@ -546,20 +546,169 @@ Træet er delt op i fire segmenter og refereres med nummeret angivet til højre 
 
 \chapter*{Opgave 3}
 \section*{Spørgsmål 1}
+
+I denne opgave har jeg implementeret kommandoen \texttt{ARRLEN} til den abstrakte maskine. Denne kommando tager adressen til et array og lægger længden af arrayet på stakken.
+
+Jeg har for at implementere denne opgave ændret og tilføjet i 5 filer: \texttt{Machine.fs, Machine.java, CLex.fsl, CPar.fsy} og \texttt{Comp.fs}
+
+Først har jeg tilføjet den nye kommando til \texttt{Machine.fs}
+
+\begin{lstlisting}[language=ML]
+
+type instr =
+  ...
+  | STOP        (* halt the abstract machine       *)
+  | ARRLEN      (* get s[sp] = s[sp] - s[s[sp]]    *)
+...
+let CODESTOP   = 25
+let CODEARRLEN = 26;
+...
+let makelabenv (addr, labenv) instr = 
+    match instr with
+    ...
+    | STOP           -> (addr+1, labenv)
+    | ARRLEN         -> (addr+1, labenv)
+
+let rec emitints getlab instr ints = 
+    match instr with
+    | Label lab      -> ints
+    ...
+    | STOP           -> CODESTOP   :: ints
+    | ARRLEN         -> CODEINDEX  :: ints
+\end{lstlisting}
+
+Nu da kommandoen er tilføjet til den abstrakte maskines syntaks skal vi ændre den abstrakte maskine til at udfører kommandoen. Elementet på et arrays adresse $a$, som lægger lige efter arrayets elementer, er en pointer til arrayets første element på adresse $q$. Der ved kan man udregne arrayets længde ud da $arrlen = a-q$.
+
+Før \texttt{ARRLEN} kommandoen kaldes lægges array adressen på stakken, og arrayets længde kan så udregnes ved
+
+\begin{align*}
+a &= s[sp]\\
+q &= s[s[sp]]\\
+arrlen &= a - q\\
+\end{align*}
+
+Denne logik er implementeret i den abstrakte maskine.
+
+\begin{lstlisting}[language=java]
+final static int 
+  ...
+  STOP = 25,
+  INDEX = 26;
+
+...
+
+static int execcode(int[] p, int[] s, int[] iargs, boolean trace) {
+  int bp = -999;  // Base pointer, for local variable access 
+  int sp = -1;  // Stack top pointer
+  int pc = 0;   // Program counter: next instruction
+  for (;;) {
+    if (trace) printsppc(s, bp, sp, p, pc);
+    switch (p[pc++]) {
+      ...
+      case ARRLEN:
+        s[sp] = s[sp] - s[s[sp]];
+        break;
+      ...
+    }
+  }
+}
+
+static String insname(int[] p, int pc) {
+  switch (p[pc]) {
+  ...
+  case ARRLEN: return "ARRLEN";
+  default:     return "<unknown>";
+  }
+}
+\end{lstlisting}
+
+Nu skal syntaksen implementeres i parser og lexer specifikationen. Dette gøres ved først at tilføje det nye token til lexer specifikationen
+
+\begin{lstlisting}[language=ML]
+rule Token = parse
+  ...
+  | '|'   { BAR }
+  ...
+\end{lstlisting}
+
+hvorefter parser specifikationen rettes til. Jeg implementerer \texttt{ARRLEN} som en unary operator for ikke at skulle ændre i den abstrakte syntaks.
+
+\begin{lstlisting}[language=ML]
+...
+%token BAR
+...
+ExprNotAccess:
+  ...
+  | BAR Expr BAR  { Prim1("arrlen", $2) }
+  ...
+;
+\end{lstlisting}
+
+Til sidste implementeres operatoren i Kompileren. \texttt{|arr|} parses som en Access, men vi har brug for den som en Addr, derfor \textit{Pattern matcher} vi adressen og pakker den ind som en adresse.
+
+\begin{lstlisting}[language=ML]
+and cExpr (e : expr) (varEnv : varEnv) (funEnv : funEnv) : instr list = 
+    match e with
+    ...
+    | Prim1(ope, Access acc) when ope = "arrlen"  -> cExpr (Addr acc) varEnv funEnv @ [ARRLEN]
+    ...
+\end{lstlisting}
+
+Derved har vi implementeret kommandoen \texttt{ARRLEN} i den abstrakte maskine og gjort den tilgængelig i MicroC med syntaksen \texttt{|arr|}
+
 \section*{Spørgsmål 2}
-\section*{Spørgsmål 3}
-\section*{Spørgsmål 4}
+
+I denne opgave har jeg udvidet microC programmet givet i opgaven og testet implementationen af \texttt{ARRLEN} fra opgave 3.1.
+
+\lstinputlisting[language=C]{MicroC/exarrlen.c}
+
+Jeg har testet programmet ved hjælp af hjælpe programmet c-run og fik den forventede sum. c-run kan ses i appendiks B
+
+\begin{lstlisting}[language=bash]
+$ ./c-run exarrlen
+60
+Ran 0.0 seconds
+\end{lstlisting}
+
+\section*{Spørgsmål 3 og 4}
+
+Programmet vist i opgave 3.3 vil ikke virke fordi at b peger på adressen for det første element arrayet $q$. Da vores implementation kræver at vi har adressen på elementet i slutningen af arrayet vil dette ikke virke. Denne implementation giver os altså længden mellem det første element i arrayet og den nye pointer i stedet for arrayets rigtige længde.
+
+
+\begin{lstlisting}[language=bash]
+./c-run ex33
+7
+Ran 0.0 seconds
+
+\end{lstlisting}
+
+Programmet vist i 3.4 virke da vi her laver en pointer til arrayet hvilket altså er en pointer til arrayets sidste element $a$ som implementationen bruger.
+
+\begin{lstlisting}[language=bash]
+$ ./c-run ex34
+40
+Ran 0.0 seconds
+\end{lstlisting}
+
 \chapter*{Opgave 4}
 
 \appendix
 \chapter{Hjælpe metoder til opgave 2}
 \section*{run}
 \lstinputlisting[language=bash]{Fun/run}
+\section*{Makefile}
+\lstinputlisting[language=bash]{Fun/Makefile}
 \section*{ex23}
 \lstinputlisting[language=ML]{Fun/ex23}
 \section*{ex24}
 \lstinputlisting[language=ML]{Fun/ex24}
 \section*{ex25}
 \lstinputlisting[language=ML]{Fun/ex25}
+
+\chapter{Hjælpe metoder til opgave 3}
+\section*{c-run}
+\lstinputlisting[language=bash]{MicroC/c-run}
+\section*{Makefile}
+\lstinputlisting[language=bash]{MicroC/Makefile}
 \label{LastPage}
 \end{document}

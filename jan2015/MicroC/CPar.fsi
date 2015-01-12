@@ -15,6 +15,8 @@ type token =
   | NOT
   | SEQOR
   | SEQAND
+  | BAR
+  | DOTDOT
   | EQ
   | NE
   | GT
@@ -55,6 +57,8 @@ type tokenId =
     | TOKEN_NOT
     | TOKEN_SEQOR
     | TOKEN_SEQAND
+    | TOKEN_BAR
+    | TOKEN_DOTDOT
     | TOKEN_EQ
     | TOKEN_NE
     | TOKEN_GT
