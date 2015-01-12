@@ -1,0 +1,421 @@
+\documentclass[danish,a4paper]{report}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage[english]{babel}
+\usepackage{verbatim}
+\usepackage{color}
+\usepackage[table]{xcolor}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{url}
+\usepackage{background}
+\usepackage{lastpage}
+\usepackage{titlesec}
+\usepackage{blindtext}
+\usepackage{color}
+\usepackage{nopageno}
+\usepackage{todonotes}
+\usepackage{listings}
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{gray75}{gray}{0.75}
+\definecolor{light-gray}{gray}{0.5}
+
+\lstset{
+  frame=,
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=4
+}
+
+\addtolength{\topmargin}{-1.5cm}
+\addtolength{\textheight}{1.5cm}
+\addtolength{\oddsidemargin}{-1cm}
+\addtolength{\evensidemargin}{-1cm}
+\addtolength{\textwidth}{2cm}
+
+ 
+\definecolor{schultz}{RGB}{146,34,126}
+\definecolor{gray75}{gray}{0.75}
+\definecolor{light-gray}{gray}{0.5}
+\newcommand{\hsp}{\hspace{20pt}}
+\titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter\hsp}{0pt}{\Huge\bfseries}[{\titlerule[1.5pt]}]
+% \titlespacing*{\chapter}{0cm}{-10pt}{2em}
+\titlespacing*{\chapter}{0cm}{-20pt}{2em}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{1}
+
+\titlespacing*{\section} {0pt}{5pt}{2pt}
+\titlespacing*{\subsubsection}{0pt}{0pt}{0pt}
+
+\backgroundsetup{
+  scale=1,
+  color=black,
+  opacity=1,
+  angle=0,
+  position=current page.south,
+  vshift=60pt,
+  contents={%
+  \small%
+  \begin{minipage}{.48\textwidth}
+  \vspace{-2cm}
+  \parbox[b]{.4\textwidth}{%
+    Side \thepage\ af \pageref{LastPage}}\hfill
+  \parbox[b]{.6\textwidth}{%
+  \raggedleft \titlename}
+  \rule{\textwidth}{1.5pt}\\
+  \parbox[b]{.7\textwidth}{%
+      \name }\hfill
+  \parbox[b]{.3\textwidth}{%
+  \raggedleft \email } 
+  \end{minipage}\hspace{.02\textwidth}%
+  \begin{minipage}{.5\textwidth}
+  \vspace{-2cm}
+  \includegraphics[width=\linewidth,height=70pt,keepaspectratio]{footer_logo}
+  \end{minipage}%
+  }
+}
+
+\newcommand{\namesigdate}[2][10cm]{%
+  \begin{tabular}{@{}p{#1}@{}}
+    #2 \\[2\normalbaselineskip] \hrule \\[0pt]
+    {\small \textit{Signature}} \\[2\normalbaselineskip] \hrule \\[0pt]
+    {\small \textit{Date}}
+  \end{tabular}
+}
+
+\newcommand{\titlename}{Programmer som Data}
+\newcommand{\name}{Jacob Benjamin Cholewa}
+\newcommand{\email}{jbec@itu.dk}
+
+
+\makeatletter
+\NoBgThispage
+ \title{\Huge \textbf{\titlename} \\ \huge Eksamens opgave Januar 2015}
+ % Author
+\author{\textsc{\name} \\ \textsc{\email}}
+\begin{document}
+\maketitle
+
+\vspace*{\fill}
+\begin{center}
+\begin{large}
+Jeg erklærer hermed at jeg selv har lavet hele denne eksamensbevarelse uden hjælp fra andre
+\end{large}
+
+\vspace*{2cm}
+\namesigdate{}
+\end{center}
+
+\vspace*{\fill}
+
+
+\newpage
+
+\chapter*{Opgave 1}
+
+I denne opgave vil jeg implementere en \textit{for-to-do} løkke
+
+\begin{lstlisting}[language=C, label={lst:fortodo}]
+for x = e1 to e2 do
+  statement
+\end{lstlisting}
+
+der har samme opførsel som følgende kode stykke
+
+\begin{lstlisting}[language=C, label={lst:fortodowhile}]
+int x;
+x = e1;
+while(x <= e2){
+  statement
+  x = x+1;
+}
+\end{lstlisting}
+
+Jeg viser i de næste to punkter hvilken kode jeg har ændret ved implementeringen og hvordan jeg har testet min løsning
+
+\section*{Implementering}
+I denne opgave har jeg lavet følgende ændringer til \texttt{CLex.fsl}. Ændringerne tilføjer de tre tokens \textit{for, to} og \textit{do} til lexer specifikationen. Dette gør jeg ved i parser specifikationen at oversætte \textit{for-to-do} løkken som vist i figur \ref{lst:fortodo} til en while løkke, som vist i figur \ref{lst:fortodowhile}, da \textit{while} løkken allerede er implementeret i microC syntaks og kompiler.
+
+\begin{lstlisting}
+let keyword s =
+    match s with
+    ...        
+    | "for"     -> FOR 
+    | "to"      -> TO 
+    | "do"      -> DO 
+    ...
+;;
+\end{lstlisting}
+
+og følgende ændringer til \texttt{CPar.fsy}. Jeg har valgt at lave en løsning som implementere løkken ved hjælp af en while løkke og har derfor ikke ændret i microC syntaksen eller kompiler.
+
+\begin{lstlisting}
+...
+%token CHAR ELSE IF INT NULL PRINT PRINTLN RETURN VOID WHILE FOR TO DO
+...
+StmtM:  /* No unbalanced if-else */
+   ...
+  | FOR NAME ASSIGN Expr TO Expr DO StmtM  { 
+    Block [ 
+      Dec(TypI, $2); 
+      Stmt Expr(Assign(AccVar($2),$4)); 
+      Stmt While(
+        Prim2("<=", Access(AccVar($2)), $6),
+        Block [
+          Stmt $8; 
+          Stmt Expr(Assign(AccVar($2), Prim2("+", Access(AccVar($2)), CstI 1)))
+        ]
+      )
+    ] 
+  }
+;
+
+StmtU:
+  ...
+  | FOR NAME ASSIGN Expr TO Expr DO StmtU  { 
+    ... (Same as StmtM above) ...
+  }
+;
+...
+\end{lstlisting}
+
+
+\section*{Evaluering}
+
+Jeg har skrevet et test microC program til at teste min \textit{for-to-do} løkke implementation. 
+
+\lstinputlisting[language=C]{MicroC/exfor.c}
+
+der ved kørsel udprinter tal serien $0..n$ til stdOut. Det har jeg testet ved at køre 
+
+\begin{lstlisting}[language=bash]
+$ ./run exfor 5
+0 1 2 3 4 5
+Ran 0.0 seconds
+\end{lstlisting}
+
+og som man kan se fra output printer dette tal serien 0..5 som tilstræbet. Jeg bruger to hjælpe filer; henholdsvis run og Makefile
+
+\subsubsection*{run}
+\lstinputlisting[language=bash]{MicroC/run}
+
+\subsubsection*{Makefile}
+\lstinputlisting[language=make]{MicroC/Makefile}
+
+\chapter*{Opgave 2}
+I denne opgave har jeg implementeret \texttt{+=} og \texttt{-=} operatorer til MicroC sproget. Jeg vil i de næste to punkter vise hvordan jeg har lavet implementationen og hvordan jeg efterfølgende har testet den.
+
+\section*{Implementering}
+
+For at lave denne implementation har jeg ændret i \texttt{CLex.fsl, CPar.fsy, Absyn.fs} og \texttt{Comp.fs}.
+
+Først har jeg tilføjet to nye tokens til lexer specifikationen.
+
+\begin{lstlisting}[language=ML]
+rule Token = parser
+  ....
+  | "+="            { EQPLUS }
+  | "-="            { EQMINUS }
+  ...
+;;
+\end{lstlisting}
+
+Derefter har jeg tilføjet de nye tokens til parser specifikationen
+
+\begin{lstlisting}[language=ML]
+...
+%token PLUS MINUS TIMES DIV MOD EQPLUS EQMINUS
+...
+ExprNotAccess:
+  ...
+  | Access EQPLUS Expr                  { Eqplus($1, $3)      }
+  | Access EQMINUS Expr                 { Eqminus($1, $3)     }
+;
+\end{lstlisting}
+
+Som det ses i parser specifikationen bruger jeg to nye kommandoer: \texttt{Eqplus} og \texttt{Eqminus} som nu skal tilføjes til den abstrakte syntaks.
+
+\begin{lstlisting}[language=ML]
+and expr =                                                         
+  ...
+  | Eqplus of access * expr          (* Equals plus operator        *)
+  | Eqminus of access * expr         (* Equals minus operator       *)
+  ...
+\end{lstlisting}
+
+Til sidst skal der nu tilføjes logik i kompileren til at forstå og udfører de nye operatorer. Det er i implementationen vigtigt at vestre siden af et udtryk, eg $a[0] += b$, kun evalueres en gang. Derfor starter jeg i kompileren med at hente adressen på variablen hvorefter den duplikeres med \texttt{DUP} kaldet da adressen skal bruges to gange til første at hente og derefter gemme variablen. Derefter bruger jeg \texttt{LDI} til at hente indholdet af variablen ind på stakken. Derefter evalueres den højre side af udtrykket og adderes så sammen med \texttt{ADD} før den nye værdi gemmes i variablen med \texttt{STI}.
+
+\begin{lstlisting}[language=ML]
+and cExpr (e : expr) (varEnv : varEnv) (funEnv : funEnv) : instr list = 
+    ...
+    | Eqplus (acc, e) ->  
+                    cAccess acc varEnv funEnv 
+                    @ [DUP;LDI] 
+                    @ cExpr e varEnv funEnv 
+                    @ [ADD; STI]  
+    | Eqminus (acc, e) -> 
+                    cAccess acc varEnv funEnv 
+                    @ [DUP;LDI] 
+                    @ cExpr e varEnv funEnv 
+                    @ [SUB; STI] 
+\end{lstlisting}
+
+
+section*{Evaluering}
+
+Jeg har skrevet et test microC program til at teste operatorerne.
+
+\lstinputlisting[language=C]{MicroC/exeqplus.c}
+
+der ved kørsel udprinter $100 1$ til stdOut. Det er også det ventede resultat da $0+100$ giver $100$ som bliver udskrevet og da $i$ kun er blevet inkrementeret en gang.  Det har jeg testet ved at køre 
+
+\begin{lstlisting}[language=bash]
+$ ./run exeqplus
+100 1
+Ran 0.0 seconds
+\end{lstlisting}
+
+Jeg har brugt samme hjælpe metoder som i opgave 1
+
+\chapter*{Opgave 3}
+I denne opgave har jeg implementeret kommandoen \texttt{INDEX} til den abstrakte maskine. Denne kommando skal checke, givet et array og et indeks, om arrayet indeholder indekset og i givet fald så hente adressen til elementet på indekset.
+
+\section*{Implementering}
+Jeg har i denne opgave ændret i tre filer: \texttt{Machine.fs, Machine.java} og \texttt{Comp.fs}
+
+Jeg starede med at tilføje den nye kommando til \texttt{Machine.fs}
+
+\begin{lstlisting}[language=ML]
+
+type instr =
+  ...
+  | STOP                               (* halt the abstract machine       *)
+  | INDEX                              (* get s[s[sp-1]] + s[sp]          *)
+...
+let CODESTOP   = 25
+let CODEINDEX  = 26;
+...
+let makelabenv (addr, labenv) instr = 
+    match instr with
+    ...
+    | STOP           -> (addr+1, labenv)
+    | INDEX          -> (addr+1, labenv)
+
+let rec emitints getlab instr ints = 
+    match instr with
+    | Label lab      -> ints
+    ...
+    | STOP           -> CODESTOP   :: ints
+    | INDEX          -> CODEINDEX  :: ints
+\end{lstlisting}
+
+Nu da vi har tilføjet til dem vores abstrakte maskines sytaks skal vi nu ændre den abstrakte maskine til at kunne udfører kommandoen.
+
+\begin{lstlisting}[language=java]
+final static int 
+  ...
+  STOP = 25,
+  INDEX = 26;
+...
+
+static int execcode(int[] p, int[] s, int[] iargs, boolean trace) {
+  int bp = -999;  // Base pointer, for local variable access 
+  int sp = -1;  // Stack top pointer
+  int pc = 0;   // Program counter: next instruction
+  for (;;) {
+    if (trace) printsppc(s, bp, sp, p, pc);
+    switch (p[pc++]) {
+      ...
+      case INDEX:
+        int a,q,i;
+        a = s[sp-1]; q = s[a]; i = s[sp];
+        if(0 <= i && i < (a-q)) s[--sp] = q+i;
+        else throw new ArrayIndexOutOfBoundsException(i);
+        break;
+      ...
+    }
+  }
+}
+\end{lstlisting}
+
+Når kommandoen udførers ligger der adressen til arrayet og indekset på stakken. Vi henter derfor først $a$, som er adressen på arrayet, $q$, som er adressen på det første element i arrayet, og $i$, som er indekset på det element vi vil hente. Da længden af arrayet kan udregnes ved $n = a - q$ checker vi først om indekset er inden for arrayets længde. Hvis indekset er inden for arrayets længde lægger vi elementets adresse på stakken, $addr = q+i$, ellers kastes en exception.
+
+Til sidst skal vi ændre kompileren til bruge kommandoen \texttt{INDEX}.
+
+\begin{lstlisting}[language=ML]
+and cAccess access varEnv funEnv : instr list =
+    match access with 
+    ...
+    | AccIndex(acc, idx) -> cAccess acc varEnv funEnv 
+                             @ cExpr idx varEnv funEnv @ [INDEX]
+\end{lstlisting}
+
+\section*{Evaluering}
+
+For at teste implementationen har jeg skrevet et lille microC program.
+
+\lstinputlisting[language=C]{MicroC/exindex.c}
+
+Dette program tilgår et array, og derfor vil \texttt{INDEX} komandoen blive kaldt. For både at teste gyldige og ugyldige array tilgange har jeg lavet tre kørsler
+
+\begin{lstlisting}[language=bash]
+$ ./run exindex 1 1
+20 62
+Ran 0.0 seconds
+\end{lstlisting}
+
+\begin{lstlisting}[language=bash]
+$ ./run exindex 1 3
+20 Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException: Array index out of range: 3
+  at Machine.execcode(Machine.java:141)
+  at Machine.execute(Machine.java:53)
+  at Machine.main(Machine.java:24)
+\end{lstlisting}
+
+
+
+\chapter*{Opgave 4}
+
+\begin{lstlisting}[language=ML]
+let rec tExpr (e:expr) (varEnv:varEnv) (funEnv:funEnv) : typ = 
+        match e with
+        | Access acc     -> tAccess acc varEnv funEnv
+        | Assign(acc, e) -> tAccess acc varEnv funEnv
+        | CstI i         -> TypI
+        | Addr acc       -> tAccess acc varEnv funEnv
+        | _              -> failwith "Not implemented"
+and tAccess (access:access) (varEnv:varEnv) (funEnv:funEnv) : typ =
+        match access with
+        | AccVar s -> 
+                match lookup (fst varEnv) s with
+                | _, t -> t
+        | AccDeref e -> 
+                match (tExpr e varEnv funEnv) with
+                | TypI    -> TypP (TypI)
+                | TypP(t) -> TypP(TypP(t))
+                | _       -> failwith "Not type correct"
+        | AccIndex(a,e) when tExpr e varEnv funEnv = TypI -> 
+                TypA (tAccess a varEnv funEnv, None)
+        | _ ->  failwith "Not type correct"
+\end{lstlisting}
+
+\label{LastPage}
+\end{document}

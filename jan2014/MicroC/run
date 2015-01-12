@@ -1,0 +1,7 @@
+#!/bin/bash
+make > /dev/null
+echo \
+    'open ParseAndComp;;' \
+    'compileToFile (fromFile "'$1'.c") "'$1'.out";;' \
+    |fsharpi -r FsLexYacc.Runtime.dll Absyn.fs CPar.fs CLex.fs Parse.fs Machine.fs Comp.fs ParseAndComp.fs > /dev/null
+java Machine $1.out ${@:2}
