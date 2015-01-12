@@ -8,7 +8,9 @@ let ex4 = Let ( "x", CstI 3,
               Letfun ("f","x",
                   Prim("*", Var "x", CstI 2),
                   Call(Var "f", Var "x")),
-              Letfun ("f", "x",)));;
+              Letfun ("f", "x",
+Ôøº) )
+       );;
 //let ex5 = Snd(Snd(ex1));;
 //let ex6 = Fst(ex4);;
 let res1 = eval ex1 [];;
