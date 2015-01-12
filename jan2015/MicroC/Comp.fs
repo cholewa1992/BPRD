@@ -74,13 +74,14 @@ let allocate (kind : int -> var) (typ, x) (varEnv : varEnv) : varEnv * instr lis
       let newEnv = ((x, (kind (fdepth+i), typ)) :: env, fdepth+i+1)
       let code = [INCSP i; GETSP; CSTI (i-1); SUB]
       (newEnv, code)
-    | TypR (t, i1, i2, i3) ->
+    | TypR (t, i1, i2, i3) when t = TypI ->
+      if i2 = 0 then failwith "the step paramenter can't be zero"
       let arr = [|i1 .. i2 .. i3|]
-      let newEnv = ((x, (kind (fdepth+arr.Length), typ)) :: env, fdepth+arr.Length+1)
-      let rec add (arr:int list) (length:int)  (newEnv:varEnv) (code:instr list) : varEnv * instr list  = match arr with 
-      | []    -> (newEnv, (code @ [GETSP; CSTI (length-1); SUB]))
-      | x::xs -> add xs length newEnv <| code @ [CSTI x] 
-      add (arr |> Array.toList) arr.Length newEnv [] 
+      let newEnv = ((x, (kind (fdepth+arr.Length), TypA(t, Some arr.Length))) :: env, fdepth+arr.Length+1)
+      let code = (Array.fold (fun acc x -> acc @ [CSTI x]) [] arr @ [GETSP; CSTI (arr.Length - 1); SUB])
+      (newEnv, code) 
+    | TypR (_, _, _, _) ->
+      failwith "Only implemented for int arrays"
     | _ -> 
       let newEnv = ((x, (kind (fdepth), typ)) :: env, fdepth+1)
       let code = [INCSP 1]

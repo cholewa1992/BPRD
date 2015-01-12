@@ -691,6 +691,82 @@ Ran 0.0 seconds
 \end{lstlisting}
 
 \chapter*{Opgave 4}
+\section*{Spørgsmål 1}
+
+Jeg har i denne opgave implementeret erklæring af nye arrays med syntaksen \texttt{int a[b..s..e]} hvor $b$ er den først værdi, $s$ er det der lægges til og $e$ den maksimale værdi.
+
+Jeg har implementeret denne løsning ved at lave en ny type TypR(t,b,s,e) som når den allokeres opretter et nyt array af typen \texttt{TypA} og udfylder arrayet med talserien.
+
+
+
+  \begin{lstlisting}[language=ML]
+type typ =
+  ...
+  | TypA of typ * int option         (* Array type       *)
+  | TypR of typ * int * int * int    (* Array range type *)
+\end{lstlisting}
+
+Jeg har derefter opdateret lexer specifikationen til at have tokenet \texttt{..}. Jeg har oprettet det som et samlet token i stedet for et punktum for ikke at tillade mellemrum mellem punktummerne.
+
+\begin{lstlisting}[language=ML]
+rule Token = parse
+  ...
+  | ".."            { DOTDOT }
+  ...
+\end{lstlisting}
+
+Derefter har jeg tilføjet det nye token og den nye type til Parser specifikationen. Jeg har tilføjet en ny non terminal for at kunne tillade både positive og negative tal uden at tillade \texttt{Boolean} og \texttt{NULL}
+
+\begin{lstlisting}[language=ML]
+%token BAR DOTDOT
+...
+Vardesc: 
+  ... 
+  | Vardesc LBRACK Number DOTDOT Number DOTDOT  Number RBRACK 
+                { compose1 (fun t -> TypR(t,$3,$5,$7)) $1 }
+;
+...
+Const:
+    Number                              { $1       }
+  | CSTBOOL                             { $1       }
+  | MINUS CSTINT                        { - $2     }
+  | NULL                                { -1       }
+;
+Number:
+    CSTINT                              { $1       }
+  | MINUS CSTINT                        { - $2     }
+;
+\end{lstlisting}
+
+Tilsidste har jeg implementeret logikken i kompileren. Jeg tillader kun at man initialisere int arrays.
+
+\begin{lstlisting}[language=ML]
+let allocate (kind : int -> var) (typ, x) (varEnv : varEnv) : varEnv * instr list =
+    ...
+    | TypR (t, i1, i2, i3) when t = TypI ->
+      if i2 = 0 then failwith "the step paramenter can't be zero"
+      let arr = [|i1 .. i2 .. i3|]
+      let newEnv = ((x, (kind (fdepth+arr.Length), TypA(t, Some arr.Length))) :: env, fdepth+arr.Length+1)
+      let code = (Array.fold (fun acc x -> acc @ [CSTI x]) []  arr @ [GETSP; CSTI (arr.Length - 1); SUB])
+      (newEnv, code) 
+    | TypR (_, _, _, _) ->
+      failwith "Only implemented for int arrays"
+    ...
+\end{lstlisting}
+
+\section*{Spørgsmål 2 og 3}
+
+Jeg har for at kunne teste implementationen skrevet et lille test program der tager en given range, summere den sammen og returnerer resultatet. Jeg har været nødt til at give array længden for arrayet med som parameter da jeg ellers ville få problemet som beskrevet i opgave 3.3
+
+\lstinputlisting[language=C]{MicroC/exrange.c}
+
+Hvilket evaluere til hvilket var det forventede resultat.
+
+\begin{lstlisting}[language=bash]
+$ ./c-run exrange
+100 0 275 0 10
+Ran 0.001 seconds
+\end{lstlisting}
 
 \appendix
 \chapter{Hjælpe metoder til opgave 2}

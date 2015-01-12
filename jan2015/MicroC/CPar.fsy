@@ -62,7 +62,7 @@ Vardesc:
   | LPAR Vardesc RPAR                   { $2                                      } 
   | Vardesc LBRACK RBRACK               { compose1 (fun t -> TypA(t, None)) $1    }
   | Vardesc LBRACK CSTINT RBRACK        { compose1 (fun t -> TypA(t, Some $3)) $1 }
-  | Vardesc LBRACK CSTINT DOTDOT CSTINT DOTDOT CSTINT RBRACK 
+  | Vardesc LBRACK Number DOTDOT Number DOTDOT Number RBRACK 
        					{ compose1 (fun t -> TypR(t,$3,$5,$7)) $1 }
 ;
 
@@ -164,10 +164,15 @@ Exprs1:
 ;
 
 Const:
-    CSTINT                              { $1       }
+    Number                              { $1       }
   | CSTBOOL                             { $1       }
   | MINUS CSTINT                        { - $2     }
   | NULL                                { -1       }
+;
+
+Number:
+    CSTINT                              { $1       }
+  | MINUS CSTINT                        { - $2     }
 ;
 
 Type:
