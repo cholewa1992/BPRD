@@ -2,6 +2,7 @@
 
 *.pdf
 !frontpage.pdf
+!BPRD-exam-jbec.pdf
 
 ### C ###
 # Object files
