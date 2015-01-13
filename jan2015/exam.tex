@@ -539,7 +539,7 @@ Træet er delt op i fire segmenter og refereres med nummeret angivet til højre 
 \end{equation}
 
 \chapter*{Opgave 3}
-\section*{Spørgsmål 1}
+\section*{Spørgsmål 3.1}
 
 I denne opgave har jeg implementeret kommandoen \texttt{ARRLEN} til den abstrakte maskine. Denne kommando tager adressen til et array og lægger længden af arrayet på stakken.
 
@@ -588,7 +588,7 @@ q &= s[s[sp]]\\
 n &= a - q\\
 \end{align*}\\
 
-Denne logik er implementeret i den abstrakte maskine.
+Denne logik er implementeret i den abstrakte maskine i filen \texttt{Machine.java}
 
 \begin{lstlisting}[language=java]
 final static int 
@@ -623,7 +623,7 @@ static String insname(int[] p, int pc) {
 }
 \end{lstlisting}
 
-Nu skal syntaksen implementeres i parser og lexer specifikationen. Dette gøres ved først at tilføje det nye token til lexer specifikationen
+Nu skal syntaksen implementeres i parser og lexer specifikationen. Dette gøres ved først at tilføje det nye token til lexer specifikationen i filen \texttt{CLex.fsl}
 
 \begin{lstlisting}[language=ML]
 rule Token = parse
@@ -632,7 +632,7 @@ rule Token = parse
   ...
 \end{lstlisting}
 
-hvorefter parser specifikationen rettes til. Jeg implementerer \texttt{ARRLEN} som en unary operator for ikke at skulle ændre i den abstrakte syntaks.
+hvorefter parser specifikationen rettes til i filen \texttt{CPar.fsy}. Jeg implementerer \texttt{ARRLEN} som en unary operator for ikke at skulle ændre i den abstrakte syntaks.
 
 \begin{lstlisting}[language=ML]
 ...
@@ -645,7 +645,7 @@ ExprNotAccess:
 ;
 \end{lstlisting}
 
-Til sidste implementeres operatoren i Kompileren. \texttt{|arr|} parses som en \texttt{Access}, men vi har brug for den som en \texttt{Addr}, derfor \textit{Pattern matcher} vi adressen og pakker den ind som en \texttt{Addr}.
+Til sidste implementeres operatoren i Kompileren i filen \texttt{Comp.fs}. \texttt{|arr|} parses som en \texttt{Access}, men vi har brug for den som en \texttt{Addr}, derfor \textit{Pattern matcher} vi adressen og pakker den ind som en \texttt{Addr}.
 
 \begin{lstlisting}[language=ML]
 and cExpr (e : expr) (varEnv : varEnv) (funEnv : funEnv) : instr list = 
@@ -657,7 +657,7 @@ and cExpr (e : expr) (varEnv : varEnv) (funEnv : funEnv) : instr list =
 
 Derved har vi implementeret kommandoen \texttt{ARRLEN} i den abstrakte maskine og gjort den tilgængelig i MicroC med syntaksen \texttt{|arr|}
 
-\section*{Spørgsmål 2}
+\section*{Spørgsmål 3.2}
 
 I denne opgave har jeg udvidet microC programmet givet i opgaven og testet implementationen af \texttt{ARRLEN} fra opgave 3.1.
 
@@ -671,7 +671,7 @@ $ ./c-run exarrlen
 Ran 0.0 seconds
 \end{lstlisting}
 
-\section*{Spørgsmål 3 og 4}
+\section*{Spørgsmål 3.3 og 3.4}
 
 Programmet vist i opgave 3.3 vil ikke virke fordi at $b$ peger på adressen for det første element i arrayet $q$. Da vores implementation kræver at vi har adressen på elementet i slutningen af arrayet vil dette ikke virke. Programmet vist i 3.3 giver os altså længden mellem det første element i arrayet og $b$'s placering på stakken i stedet for arrayets rigtige længde.
 
@@ -695,11 +695,11 @@ Ran 0.0 seconds             Ran 0.0 seconds
 \end{tabular}
 \end{center}
 \chapter*{Opgave 4}
-\section*{Spørgsmål 1}
+\section*{Spørgsmål 4.1}
 
 Jeg har i denne opgave implementeret erklæring af nye arrays med syntaksen \texttt{int a[b..s..e]} hvor $b$ er den først værdi, $s$ er det der lægges til for hvert trin og $e$ den maksimale værdi.
 
-Jeg har implementeret denne løsning ved at lave en ny type TypR(t,b,s,e) som når den allokeres opretter et nyt array af typen \texttt{TypA} og udfylder arrayet med talserien.
+Jeg har implementeret denne løsning ved at lave en ny type TypR(t,b,s,e) som når den allokeres opretter et nyt array af typen \texttt{TypA} og udfylder arrayet med talserien. Dette er implementeret i \texttt{Absyn.fs}
 
   \begin{lstlisting}[language=ML]
 type typ =
@@ -708,7 +708,7 @@ type typ =
   | TypR of typ * int * int * int    (* Array range type *)
 \end{lstlisting}
 
-Jeg har derefter opdateret lexer specifikationen til at have tokenet \texttt{DOTDOT}. Jeg har oprettet det som et samlet token i stedet for et punktum for ikke at tillade mellemrum mellem punktummerne.
+Jeg har derefter opdateret lexer specifikationen i filen \texttt{CLex.fsl} til at have tokenet \texttt{DOTDOT}. Jeg har oprettet det som et samlet token i stedet for et punktum for ikke at tillade mellemrum mellem punktummerne.
 
 \begin{lstlisting}[language=ML]
 rule Token = parse
@@ -717,7 +717,7 @@ rule Token = parse
   ...
 \end{lstlisting}
 
-Derefter har jeg tilføjet det nye token og den nye type til Parser specifikationen. Jeg har tilføjet en ny non terminal for at kunne tillade både positive og negative tal uden at tillade \texttt{Boolean} og \texttt{NULL}
+Derefter har jeg tilføjet det nye token og den nye type til Parser specifikationen i filen \texttt{CPar.fsy}. Jeg har tilføjet en ny non terminal for at kunne tillade både positive og negative tal uden at tillade \texttt{Boolean} og \texttt{NULL}
 
 \begin{lstlisting}[language=ML]
 %token BAR DOTDOT
@@ -739,7 +739,7 @@ Number:
 ;
 \end{lstlisting}
 
-Til sidste har jeg implementeret logikken i kompileren. Jeg tillader kun at man initialisere int arrays. I stedet for at bruge kommandoen \texttt{INCSP i} for at initialisere tomme plader på stakken, tilføjer jeg en \texttt{CSTI i} kommando for hvert element i rangen og fylder på den måde den nye array op med værdierne fra rangen. Til sidst ligger jeg en reference til det første array element på stakken ligesom ved en normal array initialisering.\newline
+Til sidste har jeg implementeret logikken i kompileren i filen \texttt{Comp.fs}. Jeg tillader kun at man initialisere int arrays. I stedet for at bruge kommandoen \texttt{INCSP i} for at initialisere tomme plader på stakken, tilføjer jeg en \texttt{CSTI i} kommando for hvert element i rangen og fylder på den måde den nye array op med værdierne fra rangen. Til sidst ligger jeg en reference til det første array element på stakken ligesom ved en normal array initialisering.\newline
 
 \begin{lstlisting}[language=ML]
 let allocate (kind : int -> var) (typ, x) (varEnv : varEnv) : varEnv * instr list =
@@ -755,7 +755,7 @@ let allocate (kind : int -> var) (typ, x) (varEnv : varEnv) : varEnv * instr lis
     ...
 \end{lstlisting}
 
-\section*{Spørgsmål 2 og 3}
+\section*{Spørgsmål 4.2 og 4.3}
 
 Jeg har for at kunne teste implementationen skrevet et lille test program der tager en given range, summere den sammen og returnerer resultatet. Jeg har været nødt til at give array længden for arrayet med som parameter da jeg ellers ville få problemet som beskrevet i opgave 3.3
 
