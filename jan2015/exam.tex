@@ -135,10 +135,11 @@ Jeg erklærer hermed at jeg selv har lavet hele denne eksamensbevarelse uden hj�
 
 \chapter*{Opgave 1}
 \section*{Spørgsmål 1.1}
-Det regulære udtryk $e(fd*)*x$ beskriver et bar system. Du kan gå ind i baren, $e(nter)$, og her kan du så hente øl, $f(etch)$, (Du behøver ikke). Når du har en øl kan du hente en mere eller du kan drikke af den du allerede har 0 til flere gange $d(rink)$. Tilsidst kan du gå ud af baren, $e(xit)$, lige gyldigt om du har eller ikke har hentet og drukket øl.
+Det regulære udtryk $e(fd*)*x$ beskriver et bar system. Du kan gå ind i baren, $e(nter)$, og her kan du så hente øl, $f(etch)$. Når du har en øl kan du hente en mere eller du kan drikke af den du allerede har 0 til flere gange $d(rink)$. Tilsidst kan du gå ud af baren, $e(xit)$, lige gyldigt om du har eller ikke har hentet og drukket øl.
 
 Dette regulære udtryk beskriver altså for eksempel disse strenge:
-\begin{center}$ ex$,
+\begin{center}
+$ex$,
 $efx$,
 $effx$,
 $efdx$,
@@ -291,7 +292,7 @@ Jeg forklare i Spørgsmål 2.3 hvad det betyder for funktionaliteten og hvordan 
 
 \section*{Spørgsmål 2.3}
 
-Jeg har brugt et lille hjælpe program \texttt{run} som kan findes i appendiks. Filen \texttt{ex23} som indeholder mine eksempler kan også findes i appendiks A.
+I denne opgave har jeg lavet fire udtryk til at teste min implementation af \texttt{Pair, Fst} og \texttt{Snd}. Jeg bruger til evalueringen et lille hjælpe program \texttt{run} som kan findes i appendiks A. Filen \texttt{ex23} som indeholder mine eksempler kan også findes i appendiks A.
 
 \begin{lstlisting}[language=bash]
 $ ./run < ex23
@@ -312,7 +313,7 @@ $ ./run < ex23
 > val res4 : value = ValuePair (Int 6,Int 5)
 \end{lstlisting}
 
-Min implementation fungere, men et valg jeg træf var at gøre så \texttt{Fst} og \texttt{Snd} kun evaluere den del af parret som der er brug for. Det gør så også at min implementation ikke kan evaluere udtryk som disse:
+Min implementation fungere, men et valg jeg træf er at evaluere \texttt{Fst} og \texttt{Snd} ved at \textit{Pattern Matche} på \texttt{Pair} og ikke på evalueringen af \texttt{Pair}. Det gør så også at min implementation ikke kan evaluere udtryk som disse:
 
 \begin{lstlisting}[language=ML]
 let ex5 = Snd(Snd(ex1));;
@@ -398,7 +399,7 @@ Filen \texttt{ex24} kan ses i appendiks A.
 
 \section*{Spørgsmål 2.5}
 
-Jeg har omskrevet mine eksempler fra opgave 2.3 til
+I denne opgave har jeg har omskrevet mine eksempler fra opgave 2.3 til
 
 \begin{lstlisting}[language=ML]
 (1,(2,3))
@@ -570,15 +571,22 @@ let rec emitints getlab instr ints =
     | ARRLEN         -> CODEINDEX  :: ints
 \end{lstlisting}
 
-Nu da kommandoen er tilføjet til den abstrakte maskines syntaks skal vi ændre den abstrakte maskine til at kunne udfører kommandoen. Elementet på et arrays adresse $a$, som lægger lige efter arrayets elementer, er en pointer til arrayets første element på adresse $q$. Der ved kan man udregne arrayets længde ud da $arrlen = a-q$.
+Nu da kommandoen er tilføjet til den abstrakte maskines syntaks skal vi ændre den abstrakte maskine til at kunne udfører kommandoen. Elementet på et arrays adresse $a$, som lægger lige efter arrayets elementer, er en pointer til arrayets første element på adresse $q$. Der ved kan man udregne arrayets længde ud da $n = a-q$.\\
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ccccccccccc}
+& $q$ & $q+1$ & & $q+n-1$ & $a$ & \\  \hline
+\multicolumn{1}{l|}{...} & \multicolumn{1}{l|}{$arr{[}0{]}$} & \multicolumn{1}{l|}{$arr{[}1{]}$} & \multicolumn{1}{l|}{...} & \multicolumn{1}{l|}{$arr{[}n-1{]}$} & \multicolumn{1}{l|}{$q$} & ... \\ \hline
+\end{tabular}
+\end{table}
 
 Før \texttt{ARRLEN} kommandoen kaldes lægges array adressen på stakken, og arrayets længde kan så udregnes ved
-
 \begin{align*}
 a &= s[sp]\\
 q &= s[s[sp]]\\
-arrlen &= a - q\\
-\end{align*}
+n &= a - q\\
+\end{align*}\\
 
 Denne logik er implementeret i den abstrakte maskine.
 
@@ -655,7 +663,7 @@ I denne opgave har jeg udvidet microC programmet givet i opgaven og testet imple
 
 \lstinputlisting[language=C]{MicroC/exarrlen.c}
 
-Jeg har testet programmet ved hjælp af hjælpe programmet c-run og fik den forventede sum. c-run kan ses i appendiks B
+Jeg har testet programmet ved hjælp af hjælpe programmet \texttt{c-run} og fik den forventede sum. \texttt{c-run} og \texttt{exarrlen.c} kan ses i appendiks B
 
 \begin{lstlisting}[language=bash]
 $ ./c-run exarrlen
@@ -665,24 +673,27 @@ Ran 0.0 seconds
 
 \section*{Spørgsmål 3 og 4}
 
-Programmet vist i opgave 3.3 vil ikke virke fordi at $b$ peger på adressen for det første element i arrayet $q$. Da vores implementation kræver at vi har adressen på elementet i slutningen af arrayet vil dette ikke virke. Denne implementation giver os altså længden mellem det første element i arrayet og pointer $b$'s placering på stakken i stedet for arrayets rigtige længde.
+Programmet vist i opgave 3.3 vil ikke virke fordi at $b$ peger på adressen for det første element i arrayet $q$. Da vores implementation kræver at vi har adressen på elementet i slutningen af arrayet vil dette ikke virke. Programmet vist i 3.3 giver os altså længden mellem det første element i arrayet og $b$'s placering på stakken i stedet for arrayets rigtige længde.
 
+\begin{table}[h]
+\centering
+\begin{tabular}{ccccccccccc}
+& $q$ & $q+1$ & & $q+n-1$ & $a$ & & $b$ & & $b*$ & \\  \hline
+\multicolumn{1}{l|}{...} & \multicolumn{1}{l|}{$arr{[}0{]}$} & \multicolumn{1}{l|}{$arr{[}1{]}$} & \multicolumn{1}{l|}{...} & \multicolumn{1}{l|}{$arr{[}n-1{]}$} & \multicolumn{1}{l|}{$q$} & \multicolumn{1}{l|}{...} & \multicolumn{1}{l|}{$q$} & \multicolumn{1}{l|}{...} & \multicolumn{1}{l|}{$a$} & ... \\ \hline
+\end{tabular}
+\end{table}
 
+Programmet vist i 3.4 virke da vi her laver en pointer $b*$ der før kaldet til \texttt{ARRLEN} bliver derefereret til $a$.\\
+\begin{center}
+\begin{tabular}{c}
 \begin{lstlisting}[language=bash]
-./c-run ex33
-7
-Ran 0.0 seconds
+$./c-run ex33               $ ./c-run ex34
+7                           40
+Ran 0.0 seconds             Ran 0.0 seconds
 
 \end{lstlisting}
-
-Programmet vist i 3.4 virke da vi her laver en pointer til arrayet hvilket altså er en pointer til arrayets sidste element $a$ som vores naive \texttt{ARRLEN} implementationen bruger.
-
-\begin{lstlisting}[language=bash]
-$ ./c-run ex34
-40
-Ran 0.0 seconds
-\end{lstlisting}
-
+\end{tabular}
+\end{center}
 \chapter*{Opgave 4}
 \section*{Spørgsmål 1}
 
@@ -697,7 +708,7 @@ type typ =
   | TypR of typ * int * int * int    (* Array range type *)
 \end{lstlisting}
 
-Jeg har derefter opdateret lexer specifikationen til at have tokenet \texttt{..}. Jeg har oprettet det som et samlet token i stedet for et punktum for ikke at tillade mellemrum mellem punktummerne.
+Jeg har derefter opdateret lexer specifikationen til at have tokenet \texttt{DOTDOT}. Jeg har oprettet det som et samlet token i stedet for et punktum for ikke at tillade mellemrum mellem punktummerne.
 
 \begin{lstlisting}[language=ML]
 rule Token = parse
@@ -728,7 +739,7 @@ Number:
 ;
 \end{lstlisting}
 
-Til sidste har jeg implementeret logikken i kompileren. Jeg tillader kun at man initialisere int arrays. I stedet for at bruge kommandoen \texttt{INCSP i} for at initialisere tomme plader på stakken tilføjer jeg en \texttt{CSTI i} kommando for hvert element i rangen og fylder på den måde den nye array op med værdierne fra rangen. Til sidst ligger jeg en reference til det første array element på stakken ligesom ved en normal array initialisering.
+Til sidste har jeg implementeret logikken i kompileren. Jeg tillader kun at man initialisere int arrays. I stedet for at bruge kommandoen \texttt{INCSP i} for at initialisere tomme plader på stakken, tilføjer jeg en \texttt{CSTI i} kommando for hvert element i rangen og fylder på den måde den nye array op med værdierne fra rangen. Til sidst ligger jeg en reference til det første array element på stakken ligesom ved en normal array initialisering.\newline
 
 \begin{lstlisting}[language=ML]
 let allocate (kind : int -> var) (typ, x) (varEnv : varEnv) : varEnv * instr list =
@@ -759,7 +770,7 @@ Ran 0.001 seconds
 \end{lstlisting}
 
 \appendix
-\chapter{Hjælpe metoder til opgave 2}
+\chapter{Kode til opgave 2}
 \section*{run}
 \lstinputlisting[language=bash]{Fun/run}
 \section*{Makefile}
@@ -771,7 +782,7 @@ Ran 0.001 seconds
 \section*{ex25}
 \lstinputlisting[language=ML]{Fun/ex25}
 
-\chapter{Hjælpe metoder til opgave 3}
+\chapter{Kode til opgave 3 og 4}
 \section*{c-run}
 \lstinputlisting[language=bash]{MicroC/c-run}
 \section*{Makefile}
@@ -784,5 +795,35 @@ Ran 0.001 seconds
 \lstinputlisting[language=C]{MicroC/exarrlen.c}
 \section*{exrange.c}
 \lstinputlisting[language=C]{MicroC/exrange.c}
+
+\chapter{Fun kode}
+
+I dette appendiks ses alle de opgivede Fun filer jeg har ændret i
+
+\section*{FunLex.fsl}
+\lstinputlisting[language=ML]{Fun/FunLex.fsl}
+\section*{FunPar.fsy}
+\lstinputlisting[language=ML]{Fun/FunPar.fsy}
+\section*{Absyn.fs}
+\lstinputlisting[language=ML]{Fun/Absyn.fs}
+\section*{HigherFun.fs}
+\lstinputlisting[language=ML]{Fun/HigherFun.fs}
+\chapter{MicroC kode}
+
+I dette appendiks ses alle de opgivede Micro filer jeg har ændret i
+
+\section*{CLex.fsl}
+\lstinputlisting[language=ML]{MicroC/CLex.fsl}
+\section*{CPar.fsy}
+\lstinputlisting[language=ML]{MicroC/CPar.fsy}
+\section*{Absyn.fs}
+\lstinputlisting[language=ML]{MicroC/Absyn.fs}
+\section*{Comp.fs}
+\lstinputlisting[language=ML]{MicroC/Comp.fs}
+\section*{Machine.fs}
+\lstinputlisting[language=ML]{MicroC/Machine.fs}
+\section*{Machine.java}
+\lstinputlisting[language=Java]{MicroC/Machine.java}
+
 \label{LastPage}
 \end{document}
